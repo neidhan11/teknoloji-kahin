@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bildirimler | Teknoloji Kahin</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        .notify-header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .notify-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .notify-header p {
+            opacity: 0.9;
+        }
+
+        .subscription-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sub-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .sub-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .sub-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .sub-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .checkbox-item input {
+            accent-color: var(--accent-blue);
+        }
+
+        .checkbox-item.checked {
+            background: rgba(88, 166, 255, 0.2);
+            border-color: var(--accent-blue);
+        }
+
+        .sub-btn {
+            padding: 15px 30px;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .sub-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .sub-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .alert-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .alert-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .alert-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .alert-card.active {
+            border-color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+        }
+
+        .alert-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .alert-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .alert-toggle {
+            margin-left: auto;
+            width: 50px;
+            height: 26px;
+            background: var(--bg-secondary);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .alert-toggle.active {
+            background: var(--accent-green);
+        }
+
+        .alert-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s;
+        }
+
+        .alert-toggle.active::after {
+            left: 27px;
+        }
+
+        .preview-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .email-preview {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            color: #333;
+        }
+
+        .email-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .email-header h2 {
+            color: #667eea;
+        }
+
+        .email-content h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .email-trend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .email-rank {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .email-name {
+            flex: 1;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .email-growth {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(63, 185, 80, 0.2);
+            border: 1px solid var(--accent-green);
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .subscription-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+
+        <div class="notify-header">
+            <h1>📧 Bildirimler & Abonelik</h1>
+            <p>Haftalık trend raporlarını ve önemli güncellemeleri kaçırma!</p>
+        </div>
+
+        <!-- Abonelik Formları -->
+        <div class="subscription-section">
+            <div class="sub-card">
+                <h3>📬 Haftalık Trend Raporu</h3>
+                <p>Her Pazartesi sabahı en güncel trend analizlerini al</p>
+
+                <form class="sub-form" id="weeklyForm">
+                    <div class="form-group">
+                        <label>Email Adresiniz</label>
+                        <input type="email" id="weeklyEmail" placeholder="ornek@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>İlgi Alanlarınız</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="interest" value="frontend" checked> Frontend
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="interest" value="backend"> Backend
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="interest" value="mobile"> Mobile
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="interest" value="ai"> AI/ML
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="interest" value="devops"> DevOps
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="sub-btn">📧 Abone Ol</button>
+                </form>
+
+                <div class="success-message" id="weeklySuccess">
+                    <div class="success-icon">✅</div>
+                    <h3>Abonelik Başarılı!</h3>
+                    <p>Haftalık trend raporları email adresinize gönderilecek.</p>
+                </div>
+            </div>
+
+            <div class="sub-card">
+                <h3>⚡ Anlık Uyarılar</h3>
+                <p>Önemli gelişmelerde anında haberdar ol</p>
+
+                <form class="sub-form" id="alertForm">
+                    <div class="form-group">
+                        <label>Email Adresiniz</label>
+                        <input type="email" id="alertEmail" placeholder="ornek@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Takip Etmek İstediğiniz Projeler</label>
+                        <input type="text" id="watchProjects" placeholder="react, vue, svelte...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Uyarı Eşiği</label>
+                        <select id="alertThreshold">
+                            <option value="any">Herhangi bir değişiklik</option>
+                            <option value="10">%10+ değişim</option>
+                            <option value="25" selected>%25+ değişim</option>
+                            <option value="50">%50+ değişim</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="sub-btn">🔔 Uyarı Ayarla</button>
+                </form>
+
+                <div class="success-message" id="alertSuccess">
+                    <div class="success-icon">🔔</div>
+                    <h3>Uyarı Ayarlandı!</h3>
+                    <p>Belirlediğiniz kriterlere göre uyarılar gönderilecek.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Türleri -->
+        <div class="alert-section">
+            <h3>🔔 Uyarı Türlerini Yönet</h3>
+            <div class="alert-grid">
+                <div class="alert-card active" data-alert="trending">
+                    <div class="alert-icon">🚀</div>
+                    <div class="alert-info">
+                        <h4>Yeni Trend</h4>
+                        <p>Bir proje trending listesine girdiğinde</p>
+                    </div>
+                    <div class="alert-toggle active"></div>
+                </div>
+
+                <div class="alert-card" data-alert="spike">
+                    <div class="alert-icon">📈</div>
+                    <div class="alert-info">
+                        <h4>Star Patlaması</h4>
+                        <p>Bir proje anormal star artışı gösterdiğinde</p>
+                    </div>
+                    <div class="alert-toggle"></div>
+                </div>
+
+                <div class="alert-card active" data-alert="drop">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-info">
+                        <h4>Düşüş Uyarısı</h4>
+                        <p>Takip ettiğiniz proje düşüşe geçtiğinde</p>
+                    </div>
+                    <div class="alert-toggle active"></div>
+                </div>
+
+                <div class="alert-card" data-alert="release">
+                    <div class="alert-icon">🎉</div>
+                    <div class="alert-info">
+                        <h4>Major Release</h4>
+                        <p>Önemli bir sürüm yayınlandığında</p>
+                    </div>
+                    <div class="alert-toggle"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Önizleme -->
+        <div class="preview-section">
+            <h3>📧 Haftalık Rapor Önizlemesi</h3>
+            <div class="email-preview">
+                <div class="email-header">
+                    <h2>🔮 Teknoloji Kahin</h2>
+                    <p>Haftalık Trend Raporu - 13 Ocak 2026</p>
+                </div>
+                <div class="email-content">
+                    <h4>🚀 Bu Haftanın Yükselen Yıldızları</h4>
+                    <div class="email-trend-item">
+                        <span class="email-rank">1</span>
+                        <span class="email-name">Bun</span>
+                        <span class="email-growth">↑ 847%</span>
+                    </div>
+                    <div class="email-trend-item">
+                        <span class="email-rank">2</span>
+                        <span class="email-name">Turso</span>
+                        <span class="email-growth">↑ 523%</span>
+                    </div>
+                    <div class="email-trend-item">
+                        <span class="email-rank">3</span>
+                        <span class="email-name">Drizzle ORM</span>
+                        <span class="email-growth">↑ 412%</span>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">💡 Bu Hafta Öğrenilecekler</h4>
+                    <p style="color: #666;">Bun.js'in Node.js'den %3x daha hızlı olduğu test edildi. Rust tabanlı
+                        araçlar (Turso, Drizzle) popülerleşmeye devam ediyor.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><a href="index.html">Ana Sayfa</a> | <a href="compare.html">Karşılaştır</a> | <a
+                    href="history.html">Tarihsel</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // EmailJS Başlat (gerçek projede kendi service/template ID'lerini kullan)
+        // emailjs.init("YOUR_PUBLIC_KEY");
+
+        // Checkbox styling
+        document.querySelectorAll('.checkbox-item input').forEach(input => {
+            input.addEventListener('change', () => {
+                input.closest('.checkbox-item').classList.toggle('checked', input.checked);
+            });
+        });
+
+        // Alert toggle
+        document.querySelectorAll('.alert-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+                card.querySelector('.alert-toggle').classList.toggle('active');
+            });
+        });
+
+        // Weekly form submit
+        document.getElementById('weeklyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = 'Gönderiliyor...';
+
+            // Simüle et (gerçek projede EmailJS kullan)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // LocalStorage'a kaydet (demo için)
+            const email = document.getElementById('weeklyEmail').value;
+            const interests = Array.from(document.querySelectorAll('input[name="interest"]:checked'))
+                .map(el => el.value);
+
+            localStorage.setItem('weeklySub', JSON.stringify({ email, interests }));
+
+            document.getElementById('weeklySuccess').classList.add('show');
+            e.target.style.display = 'none';
+        });
+
+        // Alert form submit
+        document.getElementById('alertForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = 'Kaydediliyor...';
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const email = document.getElementById('alertEmail').value;
+            const projects = document.getElementById('watchProjects').value;
+            const threshold = document.getElementById('alertThreshold').value;
+
+            localStorage.setItem('alertSub', JSON.stringify({ email, projects, threshold }));
+
+            document.getElementById('alertSuccess').classList.add('show');
+            e.target.style.display = 'none';
+        });
+
+        // Önceki abonelikleri kontrol et
+        function checkExistingSubs() {
+            if (localStorage.getItem('weeklySub')) {
+                document.getElementById('weeklySuccess').classList.add('show');
+                document.getElementById('weeklyForm').style.display = 'none';
+            }
+            if (localStorage.getItem('alertSub')) {
+                document.getElementById('alertSuccess').classList.add('show');
+                document.getElementById('alertForm').style.display = 'none';
+            }
+        }
+
+        checkExistingSubs();
+    </script>
+</body>
+
+</html>

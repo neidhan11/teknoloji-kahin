@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarihsel Veri | Teknoloji Kahin</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .history-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .history-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .time-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            padding: 12px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-btn:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .time-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 20px;
+        }
+
+        .timeline-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 25px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .snapshot-card {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .snapshot-rank {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-yellow);
+        }
+
+        .snapshot-name {
+            font-weight: 600;
+            margin: 5px 0;
+        }
+
+        .snapshot-score {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .history-insights {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .insight-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+        }
+
+        .insight-content h4 {
+            margin-bottom: 5px;
+        }
+
+        .insight-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+
+        <div class="history-header">
+            <h1>🗓️ Tarihsel Veri</h1>
+            <p>Geçmiş trendleri incele, geleceği tahmin et</p>
+        </div>
+
+        <!-- Zaman seçici -->
+        <div class="time-selector">
+            <button class="time-btn active" data-period="week">Son 7 Gün</button>
+            <button class="time-btn" data-period="month">Son 30 Gün</button>
+            <button class="time-btn" data-period="quarter">Son 3 Ay</button>
+            <button class="time-btn" data-period="year">Son 1 Yıl</button>
+        </div>
+
+        <!-- Trend grafiği -->
+        <div class="chart-container">
+            <h3>📈 Trend Değişim Grafiği</h3>
+            <canvas id="historyChart"></canvas>
+        </div>
+
+        <!-- Zaman çizelgesi -->
+        <div class="timeline-section">
+            <h3>📅 Önemli Değişiklikler</h3>
+            <div class="timeline" id="timeline">
+                <!-- Dinamik olarak doldurulacak -->
+            </div>
+        </div>
+
+        <!-- Geçmiş snapshot -->
+        <div class="chart-container">
+            <h3>🔙 Bir Hafta Önceki Top 5</h3>
+            <div class="snapshot-grid" id="snapshotGrid">
+                <!-- Dinamik -->
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="history-insights">
+            <h3>💡 Trend Insights</h3>
+            <div id="insights">
+                <!-- Dinamik -->
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><a href="index.html">Ana Sayfa</a> | <a href="compare.html">Karşılaştır</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let historyChart = null;
+        let currentData = null;
+
+        // Demo tarihsel veri (gerçek projede data/history/ klasöründen okunur)
+        const historicalData = generateDemoHistory();
+
+        function generateDemoHistory() {
+            const projects = ['bun', 'deno', 'svelte', 'astro', 'htmx', 'tauri', 'solid'];
+            const history = {};
+
+            // Son 30 gün için veri üret
+            for (let i = 30; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+
+                history[dateStr] = {};
+                projects.forEach((project, idx) => {
+                    // Trend simülasyonu
+                    const baseScore = 90 - idx * 5;
+                    const variation = Math.sin(i * 0.3 + idx) * 10;
+                    const growthBase = 100 - idx * 15;
+                    const growthVar = Math.cos(i * 0.2 + idx) * 20;
+
+                    history[dateStr][project] = {
+                        score: Math.round(baseScore + variation),
+                        growth: Math.round(growthBase + growthVar),
+                        stars: Math.round(85000 - idx * 500 + i * 100)
+                    };
+                });
+            }
+
+            return history;
+        }
+
+        // Güncel veriyi yükle
+        async function loadCurrentData() {
+            try {
+                const response = await fetch('./data/trending.json');
+                currentData = await response.json();
+                init();
+            } catch (error) {
+                console.error('Veri yüklenemedi');
+                currentData = { projects: [], watchList: [] };
+                init();
+            }
+        }
+
+        function init() {
+            renderChart('week');
+            renderTimeline();
+            renderSnapshot();
+            renderInsights();
+            setupTimeButtons();
+        }
+
+        function setupTimeButtons() {
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderChart(btn.dataset.period);
+                });
+            });
+        }
+
+        function renderChart(period) {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+
+            // Periyoda göre gün sayısı
+            const days = {
+                'week': 7,
+                'month': 30,
+                'quarter': 90,
+                'year': 365
+            }[period];
+
+            // Son N günün tarihlerini al
+            const dates = [];
+            const today = new Date();
+            for (let i = Math.min(days, 30); i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                dates.push(d.toISOString().split('T')[0]);
+            }
+
+            const projects = ['bun', 'deno', 'svelte', 'astro', 'htmx'];
+            const colors = [
+                'rgba(102, 126, 234, 1)',
+                'rgba(163, 113, 247, 1)',
+                'rgba(63, 185, 80, 1)',
+                'rgba(210, 153, 34, 1)',
+                'rgba(88, 166, 255, 1)'
+            ];
+
+            const datasets = projects.map((project, idx) => ({
+                label: project,
+                data: dates.map(date => historicalData[date]?.[project]?.score || 50),
+                borderColor: colors[idx],
+                backgroundColor: colors[idx].replace('1)', '0.1)'),
+                tension: 0.3,
+                fill: false
+            }));
+
+            if (historyChart) {
+                historyChart.destroy();
+            }
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => {
+                        const date = new Date(d);
+                        return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+                    }),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#8b949e' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8b949e' },
+                            grid: { color: 'rgba(48, 54, 61, 0.5)' }
+                        },
+                        y: {
+                            ticks: { color: '#8b949e' },
+                            grid: { color: 'rgba(48, 54, 61, 0.5)' },
+                            min: 0,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Trend Skoru',
+                                color: '#8b949e'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTimeline() {
+            const events = [
+                { date: '2026-01-12', title: 'Bun 1.2 çıktı!', desc: 'Yeni sürümle birlikte %15 hız artışı', type: 'release' },
+                { date: '2026-01-10', title: 'Svelte 5 RC', desc: 'Runes sistemi ile reactive programlama', type: 'release' },
+                { date: '2026-01-08', title: 'Astro trending #1', desc: 'GitHub trending listesinde 1. sıraya yükseldi', type: 'trending' },
+                { date: '2026-01-05', title: 'htmx 2.0', desc: 'Major güncelleme ile yeni özellikler', type: 'release' },
+                { date: '2026-01-03', title: 'Deno 2.0 stabil', desc: 'Node.js uyumluluğu tamamlandı', type: 'milestone' }
+            ];
+
+            const container = document.getElementById('timeline');
+            container.innerHTML = events.map(e => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${formatDate(e.date)}</div>
+                    <div class="timeline-title">${e.title}</div>
+                    <div class="timeline-desc">${e.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderSnapshot() {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const dateStr = oneWeekAgo.toISOString().split('T')[0];
+
+            const data = historicalData[dateStr] || {};
+            const projects = Object.entries(data)
+                .map(([name, info]) => ({ name, ...info }))
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5);
+
+            const container = document.getElementById('snapshotGrid');
+            container.innerHTML = projects.map((p, idx) => `
+                <div class="snapshot-card">
+                    <div class="snapshot-rank">#${idx + 1}</div>
+                    <div class="snapshot-name">${p.name}</div>
+                    <div class="snapshot-score">Skor: ${p.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderInsights() {
+            const insights = [
+                { icon: '🚀', title: 'En Hızlı Yükseliş', desc: 'Bun son 30 günde %847 büyüme gösterdi' },
+                { icon: '📉', title: 'Düşüş Uyarısı', desc: 'jQuery kullanımı son 6 ayda %28 azaldı' },
+                { icon: '🔄', title: 'Trend Değişimi', desc: 'htmx, React\'a alternatif olarak öne çıkıyor' },
+                { icon: '💡', title: 'Öneri', desc: 'Svelte ve Astro öğrenmek için ideal zaman' }
+            ];
+
+            const container = document.getElementById('insights');
+            container.innerHTML = insights.map(i => `
+                <div class="insight-card">
+                    <div class="insight-icon">${i.icon}</div>
+                    <div class="insight-content">
+                        <h4>${i.title}</h4>
+                        <p>${i.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('tr-TR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        // Başlat
+        loadCurrentData();
+    </script>
+</body>
+
+</html>

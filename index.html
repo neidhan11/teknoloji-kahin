@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teknoloji Kahin - Trend Radar</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🔮</span>
+                <h1>Teknoloji Kahin</h1>
+            </div>
+            <p class="tagline">Yarının Teknolojilerini Bugünden Gör</p>
+            <div class="last-update">
+                Son güncelleme: <span id="lastUpdate">Yükleniyor...</span>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="totalRepos">-</div>
+                <div class="stat-label">Takip Edilen Proje</div>
+            </div>
+            <div class="stat-card rising">
+                <div class="stat-icon">🚀</div>
+                <div class="stat-value" id="risingCount">-</div>
+                <div class="stat-label">Yükselen</div>
+            </div>
+            <div class="stat-card falling">
+                <div class="stat-icon">📉</div>
+                <div class="stat-value" id="fallingCount">-</div>
+                <div class="stat-label">Düşen</div>
+            </div>
+        </section>
+
+        <!-- Trend Lists -->
+        <section class="trends">
+            <div class="trend-column">
+                <h2>🚀 Yükselen Teknolojiler</h2>
+                <div class="trend-list" id="risingList">
+                    <div class="loading">Veriler yükleniyor...</div>
+                </div>
+            </div>
+            <div class="trend-column">
+                <h2>⚠️ Dikkat Edilmesi Gerekenler</h2>
+                <div class="trend-list" id="watchList">
+                    <div class="loading">Veriler yükleniyor...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart -->
+        <section class="chart-section">
+            <h2>📈 Haftalık Trend Grafiği</h2>
+            <canvas id="trendChart"></canvas>
+        </section>
+
+        <!-- All Projects Table -->
+        <section class="projects-section">
+            <h2>📋 Tüm Projeler</h2>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Proje ara...">
+                <select id="sortSelect">
+                    <option value="score">Trend Skoru</option>
+                    <option value="stars">Star Sayısı</option>
+                    <option value="growth">Büyüme Hızı</option>
+                </select>
+            </div>
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Proje</th>
+                        <th>⭐ Stars</th>
+                        <th>📈 Büyüme</th>
+                        <th>Trend Skoru</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTable">
+                    <tr>
+                        <td colspan="5" class="loading">Veriler yükleniyor...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Veriler GitHub API'den alınmaktadır • Her gün otomatik güncellenir</p>
+            <nav style="margin: 15px 0;">
+                <a href="compare.html">📊 Karşılaştır</a> |
+                <a href="history.html">🗓️ Tarihsel</a> |
+                <a href="regional.html">🌍 Bölgesel</a> |
+                <a href="notifications.html">📧 Bildirimler</a>
+            </nav>
+            <p>
+                <a href="https://github.com" target="_blank">GitHub</a> |
+                <a href="#" id="refreshBtn">🔄 Verileri Yenile</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

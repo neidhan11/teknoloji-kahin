@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bölgesel Analiz | Teknoloji Kahin</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .region-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .region-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .region-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .region-btn {
+            padding: 12px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .region-btn:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .region-btn.active {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .region-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .region-stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .region-stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .region-stat-label {
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .region-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .region-card h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .tech-rank {
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-right: 15px;
+        }
+
+        .tech-name {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .tech-percent {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tech-percent.high {
+            background: rgba(63, 185, 80, 0.2);
+            color: var(--accent-green);
+        }
+
+        .tech-percent.medium {
+            background: rgba(210, 153, 34, 0.2);
+            color: var(--accent-yellow);
+        }
+
+        .tech-percent.low {
+            background: rgba(139, 148, 158, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .map-placeholder {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .map-visual {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .city-box {
+            aspect-ratio: 1;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            font-size: 0.75rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .city-box:hover {
+            transform: scale(1.1);
+            z-index: 1;
+        }
+
+        .city-box.hot {
+            background: rgba(248, 81, 73, 0.3);
+            border: 1px solid var(--accent-red);
+        }
+
+        .city-box.warm {
+            background: rgba(210, 153, 34, 0.3);
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .city-box.cool {
+            background: rgba(88, 166, 255, 0.3);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .city-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .city-devs {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .insights-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .insight-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+        }
+
+        .insight-text h4 {
+            margin-bottom: 5px;
+        }
+
+        .insight-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .region-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-visual {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Ana Sayfaya Dön</a>
+
+        <div class="region-header">
+            <h1>🌍 Bölgesel Trend Analizi</h1>
+            <p>Ülke ve bölgelere göre teknoloji trendleri</p>
+        </div>
+
+        <!-- Bölge seçici -->
+        <div class="region-selector">
+            <button class="region-btn active" data-region="turkey">🇹🇷 Türkiye</button>
+            <button class="region-btn" data-region="europe">🇪🇺 Avrupa</button>
+            <button class="region-btn" data-region="usa">🇺🇸 ABD</button>
+            <button class="region-btn" data-region="asia">🌏 Asya</button>
+            <button class="region-btn" data-region="global">🌐 Global</button>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="region-stats">
+            <div class="region-stat-card">
+                <div class="region-stat-value" id="devCount">125K</div>
+                <div class="region-stat-label">Aktif Geliştirici</div>
+            </div>
+            <div class="region-stat-card">
+                <div class="region-stat-value" id="repoCount">450K</div>
+                <div class="region-stat-label">Repo Sayısı</div>
+            </div>
+            <div class="region-stat-card">
+                <div class="region-stat-value" id="growthRate">+23%</div>
+                <div class="region-stat-label">Yıllık Büyüme</div>
+            </div>
+            <div class="region-stat-card">
+                <div class="region-stat-value" id="topLang">JS</div>
+                <div class="region-stat-label">En Popüler Dil</div>
+            </div>
+        </div>
+
+        <!-- Trend listeleri -->
+        <div class="region-grid">
+            <div class="region-card">
+                <h3>🔥 Bu Bölgede Trend</h3>
+                <div class="tech-list" id="trendingList">
+                    <!-- Dinamik -->
+                </div>
+            </div>
+            <div class="region-card">
+                <h3>📊 Global ile Karşılaştırma</h3>
+                <div class="tech-list" id="comparisonList">
+                    <!-- Dinamik -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Türkiye haritası (basitleştirilmiş) -->
+        <div class="map-placeholder">
+            <h3>🗺️ Şehir Bazlı Geliştirici Aktivitesi</h3>
+            <div class="map-visual" id="cityMap">
+                <!-- Dinamik -->
+            </div>
+        </div>
+
+        <!-- Grafik -->
+        <div class="region-card" style="margin-bottom: 30px;">
+            <h3>📈 Bölgesel Trend Karşılaştırması</h3>
+            <canvas id="regionChart"></canvas>
+        </div>
+
+        <!-- Insights -->
+        <div class="insights-section">
+            <h3>💡 Bölgesel İçgörüler</h3>
+            <div id="regionalInsights">
+                <!-- Dinamik -->
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><a href="index.html">Ana Sayfa</a> | <a href="compare.html">Karşılaştır</a> | <a
+                    href="history.html">Tarihsel</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let regionChart = null;
+
+        // Bölge verileri
+        const regionData = {
+            turkey: {
+                devCount: '125K',
+                repoCount: '450K',
+                growthRate: '+23%',
+                topLang: 'JavaScript',
+                trending: [
+                    { name: 'Next.js', percent: 34, level: 'high' },
+                    { name: 'React', percent: 28, level: 'high' },
+                    { name: 'TypeScript', percent: 22, level: 'medium' },
+                    { name: 'Node.js', percent: 18, level: 'medium' },
+                    { name: 'Vue.js', percent: 15, level: 'low' }
+                ],
+                comparison: [
+                    { name: 'React', local: '+5%', desc: 'Globalden yüksek' },
+                    { name: 'Angular', local: '-12%', desc: 'Globalden düşük' },
+                    { name: 'Python', local: '-8%', desc: 'Globalden düşük' },
+                    { name: 'Java', local: '+3%', desc: 'Globalden yüksek' },
+                    { name: '.NET', local: '+15%', desc: 'Globalden yüksek' }
+                ],
+                cities: [
+                    { name: 'İstanbul', devs: '45K', heat: 'hot' },
+                    { name: 'Ankara', devs: '18K', heat: 'warm' },
+                    { name: 'İzmir', devs: '12K', heat: 'warm' },
+                    { name: 'Bursa', devs: '5K', heat: 'cool' },
+                    { name: 'Antalya', devs: '4K', heat: 'cool' },
+                    { name: 'Konya', devs: '3K', heat: 'cool' },
+                    { name: 'Adana', devs: '2.5K', heat: 'cool' }
+                ],
+                insights: [
+                    { icon: '🚀', title: 'Hızlı Büyüme', desc: 'Türkiye, geliştirici sayısında en hızlı büyüyen 5 ülke arasında' },
+                    { icon: '💼', title: 'İş Fırsatları', desc: 'React ve Node.js, en çok talep gören teknolojiler' },
+                    { icon: '🎓', title: 'Eğitim Trendi', desc: 'TypeScript eğitimlerine ilgi %45 arttı' },
+                    { icon: '🌍', title: 'Remote Çalışma', desc: 'Türk geliştiricilerin %35\'i uluslararası şirketlerde çalışıyor' }
+                ]
+            },
+            europe: {
+                devCount: '4.2M',
+                repoCount: '12M',
+                growthRate: '+18%',
+                topLang: 'JavaScript',
+                trending: [
+                    { name: 'TypeScript', percent: 32, level: 'high' },
+                    { name: 'Rust', percent: 24, level: 'high' },
+                    { name: 'Go', percent: 20, level: 'medium' },
+                    { name: 'Python', percent: 18, level: 'medium' },
+                    { name: 'Kotlin', percent: 12, level: 'low' }
+                ],
+                comparison: [
+                    { name: 'Rust', local: '+8%', desc: 'Globalden yüksek' },
+                    { name: 'Java', local: '-5%', desc: 'Globalden düşük' },
+                    { name: 'PHP', local: '-10%', desc: 'Globalden düşük' },
+                    { name: 'Go', local: '+4%', desc: 'Globalden yüksek' },
+                    { name: 'C#', local: '+2%', desc: 'Benzer' }
+                ],
+                cities: [
+                    { name: 'Berlin', devs: '180K', heat: 'hot' },
+                    { name: 'London', devs: '250K', heat: 'hot' },
+                    { name: 'Paris', devs: '150K', heat: 'warm' },
+                    { name: 'Amsterdam', devs: '90K', heat: 'warm' },
+                    { name: 'Barcelona', devs: '70K', heat: 'cool' },
+                    { name: 'Stockholm', devs: '60K', heat: 'cool' },
+                    { name: 'Warsaw', devs: '55K', heat: 'cool' }
+                ],
+                insights: [
+                    { icon: '🦀', title: 'Rust Çılgınlığı', desc: 'Avrupa, Rust kullanımında dünya lideri' },
+                    { icon: '🔒', title: 'GDPR Etkisi', desc: 'Privacy-focused teknolojilere yoğun ilgi' },
+                    { icon: '💚', title: 'Green Tech', desc: 'Enerji verimli yazılım geliştirme trendi' },
+                    { icon: '🏢', title: 'Enterprise', desc: 'Büyük şirketler TypeScript\'e geçiyor' }
+                ]
+            },
+            usa: {
+                devCount: '4.8M',
+                repoCount: '18M',
+                growthRate: '+15%',
+                topLang: 'Python',
+                trending: [
+                    { name: 'AI/ML', percent: 38, level: 'high' },
+                    { name: 'Python', percent: 35, level: 'high' },
+                    { name: 'TypeScript', percent: 28, level: 'medium' },
+                    { name: 'Go', percent: 22, level: 'medium' },
+                    { name: 'Rust', percent: 18, level: 'low' }
+                ],
+                comparison: [
+                    { name: 'AI/ML', local: '+15%', desc: 'Global lider' },
+                    { name: 'Python', local: '+10%', desc: 'Globalden yüksek' },
+                    { name: 'PHP', local: '-20%', desc: 'Globalden düşük' },
+                    { name: 'Java', local: '-5%', desc: 'Globalden düşük' },
+                    { name: 'Swift', local: '+25%', desc: 'Apple etkisi' }
+                ],
+                cities: [
+                    { name: 'SF Bay', devs: '450K', heat: 'hot' },
+                    { name: 'Seattle', devs: '180K', heat: 'hot' },
+                    { name: 'NYC', devs: '200K', heat: 'hot' },
+                    { name: 'Austin', devs: '95K', heat: 'warm' },
+                    { name: 'Boston', devs: '80K', heat: 'warm' },
+                    { name: 'Denver', devs: '55K', heat: 'cool' },
+                    { name: 'Miami', devs: '40K', heat: 'cool' }
+                ],
+                insights: [
+                    { icon: '🤖', title: 'AI Devrimi', desc: 'Her 3 yeni projeden 1\'i AI/ML içeriyor' },
+                    { icon: '☁️', title: 'Cloud Native', desc: 'Kubernetes kullanımı %60 arttı' },
+                    { icon: '💰', title: 'Startup Boom', desc: 'Rust ve Go startup\'lar arasında popüler' },
+                    { icon: '📱', title: 'Mobile', desc: 'Flutter, React Native\'i geçti' }
+                ]
+            },
+            asia: {
+                devCount: '6.5M',
+                repoCount: '15M',
+                growthRate: '+28%',
+                topLang: 'Java',
+                trending: [
+                    { name: 'Java', percent: 30, level: 'high' },
+                    { name: 'Python', percent: 26, level: 'high' },
+                    { name: 'JavaScript', percent: 22, level: 'medium' },
+                    { name: 'C++', percent: 15, level: 'medium' },
+                    { name: 'Go', percent: 12, level: 'low' }
+                ],
+                comparison: [
+                    { name: 'Java', local: '+12%', desc: 'Enterprise dominasyonu' },
+                    { name: 'C++', local: '+8%', desc: 'Gaming & IoT' },
+                    { name: 'Ruby', local: '-15%', desc: 'Globalden düşük' },
+                    { name: 'PHP', local: '+5%', desc: 'Hala popüler' },
+                    { name: 'Rust', local: '-8%', desc: 'Globalden düşük' }
+                ],
+                cities: [
+                    { name: 'Tokyo', devs: '280K', heat: 'hot' },
+                    { name: 'Seoul', devs: '200K', heat: 'hot' },
+                    { name: 'Beijing', devs: '350K', heat: 'hot' },
+                    { name: 'Shanghai', devs: '300K', heat: 'hot' },
+                    { name: 'Bangalore', devs: '450K', heat: 'hot' },
+                    { name: 'Singapore', devs: '80K', heat: 'warm' },
+                    { name: 'Jakarta', devs: '60K', heat: 'cool' }
+                ],
+                insights: [
+                    { icon: '🎮', title: 'Gaming', desc: 'Asya, oyun geliştirme merkezi' },
+                    { icon: '📱', title: 'Super Apps', desc: 'Mini-program ekosistemi büyüyor' },
+                    { icon: '🔧', title: 'Hardware', desc: 'IoT ve embedded systems güçlü' },
+                    { icon: '📈', title: 'En Hızlı Büyüme', desc: 'Hindistan ve Endonezya lider' }
+                ]
+            },
+            global: {
+                devCount: '28M',
+                repoCount: '100M+',
+                growthRate: '+20%',
+                topLang: 'JavaScript',
+                trending: [
+                    { name: 'JavaScript', percent: 65, level: 'high' },
+                    { name: 'Python', percent: 48, level: 'high' },
+                    { name: 'TypeScript', percent: 35, level: 'medium' },
+                    { name: 'Java', percent: 32, level: 'medium' },
+                    { name: 'C#', percent: 25, level: 'low' }
+                ],
+                comparison: [
+                    { name: 'JS', local: '—', desc: 'Referans' },
+                    { name: 'Python', local: '—', desc: 'Referans' },
+                    { name: 'TypeScript', local: '—', desc: 'Referans' },
+                    { name: 'Rust', local: '—', desc: 'Referans' },
+                    { name: 'Go', local: '—', desc: 'Referans' }
+                ],
+                cities: [
+                    { name: 'SF', devs: '450K', heat: 'hot' },
+                    { name: 'Beijing', devs: '350K', heat: 'hot' },
+                    { name: 'London', devs: '250K', heat: 'hot' },
+                    { name: 'Bangalore', devs: '450K', heat: 'hot' },
+                    { name: 'Tokyo', devs: '280K', heat: 'hot' },
+                    { name: 'Berlin', devs: '180K', heat: 'warm' },
+                    { name: 'Toronto', devs: '120K', heat: 'warm' }
+                ],
+                insights: [
+                    { icon: '🌐', title: 'JS Dominasyonu', desc: 'JavaScript en yaygın dil olmaya devam' },
+                    { icon: '🐍', title: 'Python Yükselişi', desc: 'AI/ML ile Python hızla büyüyor' },
+                    { icon: '🦀', title: 'Rust Hype', desc: 'Sistem programlamada popülerleşiyor' },
+                    { icon: '☁️', title: 'Cloud Native', desc: 'Kubernetes standart haline geldi' }
+                ]
+            }
+        };
+
+        function updateUI(region) {
+            const data = regionData[region];
+
+            // Stats
+            document.getElementById('devCount').textContent = data.devCount;
+            document.getElementById('repoCount').textContent = data.repoCount;
+            document.getElementById('growthRate').textContent = data.growthRate;
+            document.getElementById('topLang').textContent = data.topLang;
+
+            // Trending list
+            document.getElementById('trendingList').innerHTML = data.trending.map((t, i) => `
+                <div class="tech-item">
+                    <span class="tech-rank">${i + 1}</span>
+                    <span class="tech-name">${t.name}</span>
+                    <span class="tech-percent ${t.level}">${t.percent}%</span>
+                </div>
+            `).join('');
+
+            // Comparison list
+            document.getElementById('comparisonList').innerHTML = data.comparison.map(c => `
+                <div class="tech-item">
+                    <span class="tech-name">${c.name}</span>
+                    <span class="tech-percent ${c.local.startsWith('+') ? 'high' : c.local.startsWith('-') ? 'low' : 'medium'}">${c.local}</span>
+                </div>
+            `).join('');
+
+            // City map
+            document.getElementById('cityMap').innerHTML = data.cities.map(c => `
+                <div class="city-box ${c.heat}">
+                    <div class="city-name">${c.name}</div>
+                    <div class="city-devs">${c.devs}</div>
+                </div>
+            `).join('');
+
+            // Insights
+            document.getElementById('regionalInsights').innerHTML = data.insights.map(i => `
+                <div class="insight-row">
+                    <div class="insight-icon">${i.icon}</div>
+                    <div class="insight-text">
+                        <h4>${i.title}</h4>
+                        <p>${i.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Chart
+            updateChart(region);
+        }
+
+        function updateChart(region) {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+
+            if (regionChart) {
+                regionChart.destroy();
+            }
+
+            const data = regionData[region];
+
+            regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.trending.map(t => t.name),
+                    datasets: [{
+                        label: 'Kullanım %',
+                        data: data.trending.map(t => t.percent),
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(163, 113, 247, 0.8)',
+                            'rgba(63, 185, 80, 0.8)',
+                            'rgba(210, 153, 34, 0.8)',
+                            'rgba(88, 166, 255, 0.8)'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8b949e' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { color: '#8b949e' },
+                            grid: { color: 'rgba(48, 54, 61, 0.5)' },
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Event listeners
+        document.querySelectorAll('.region-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateUI(btn.dataset.region);
+            });
+        });
+
+        // Başlat
+        updateUI('turkey');
+    </script>
+</body>
+
+</html>

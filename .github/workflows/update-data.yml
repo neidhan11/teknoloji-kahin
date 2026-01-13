@@ -1,0 +1,40 @@
+# Teknoloji Kahin - Günlük Veri Güncelleme
+# Her gün saat 09:00 UTC'de çalışır
+
+name: Günlük Veri Güncelleme
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Her gün 09:00 UTC (12:00 Türkiye)
+  workflow_dispatch:  # Manuel tetikleme
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v4
+      
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Veri çekme scriptini çalıştır
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-data.js
+      
+      - name: Değişiklikleri commit et
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/
+          git diff --staged --quiet || git commit -m "📊 Günlük veri güncelleme - $(date +'%Y-%m-%d')"
+      
+      - name: Push et
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main

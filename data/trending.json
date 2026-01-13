@@ -1,0 +1,124 @@
+{
+    "lastUpdate": "2026-01-13T16:30:00.000Z",
+    "projects": [
+        {
+            "name": "bun",
+            "fullName": "oven-sh/bun",
+            "stars": 85000,
+            "growth": 847,
+            "description": "Incredibly fast JavaScript runtime, bundler, test runner, and package manager",
+            "language": "Zig",
+            "score": 95
+        },
+        {
+            "name": "deno",
+            "fullName": "denoland/deno",
+            "stars": 92000,
+            "growth": 234,
+            "description": "A modern runtime for JavaScript and TypeScript",
+            "language": "Rust",
+            "score": 88
+        },
+        {
+            "name": "turso",
+            "fullName": "tursodatabase/libsql",
+            "stars": 12000,
+            "growth": 523,
+            "description": "libSQL is a fork of SQLite that is both Open Source, and Open Contributions",
+            "language": "Rust",
+            "score": 87
+        },
+        {
+            "name": "drizzle-orm",
+            "fullName": "drizzle-team/drizzle-orm",
+            "stars": 18000,
+            "growth": 412,
+            "description": "TypeScript ORM that feels like writing SQL",
+            "language": "TypeScript",
+            "score": 85
+        },
+        {
+            "name": "htmx",
+            "fullName": "bigskysoftware/htmx",
+            "stars": 28000,
+            "growth": 356,
+            "description": "High power tools for HTML",
+            "language": "JavaScript",
+            "score": 82
+        },
+        {
+            "name": "svelte",
+            "fullName": "sveltejs/svelte",
+            "stars": 75000,
+            "growth": 189,
+            "description": "Cybernetically enhanced web apps",
+            "language": "JavaScript",
+            "score": 80
+        },
+        {
+            "name": "astro",
+            "fullName": "withastro/astro",
+            "stars": 38000,
+            "growth": 278,
+            "description": "The all-in-one web framework designed for speed",
+            "language": "TypeScript",
+            "score": 79
+        },
+        {
+            "name": "tauri",
+            "fullName": "tauri-apps/tauri",
+            "stars": 72000,
+            "growth": 156,
+            "description": "Build smaller, faster, and more secure desktop apps",
+            "language": "Rust",
+            "score": 77
+        },
+        {
+            "name": "fresh",
+            "fullName": "denoland/fresh",
+            "stars": 11000,
+            "growth": 198,
+            "description": "The next-gen web framework for Deno",
+            "language": "TypeScript",
+            "score": 75
+        },
+        {
+            "name": "solid",
+            "fullName": "solidjs/solid",
+            "stars": 29000,
+            "growth": 134,
+            "description": "A declarative, efficient, and flexible JavaScript library for building UIs",
+            "language": "TypeScript",
+            "score": 73
+        }
+    ],
+    "watchList": [
+        {
+            "name": "moment",
+            "fullName": "moment/moment",
+            "stars": 47000,
+            "growth": -34,
+            "description": "Parse, validate, manipulate, and display dates in JavaScript",
+            "language": "JavaScript",
+            "score": 35
+        },
+        {
+            "name": "jquery",
+            "fullName": "jquery/jquery",
+            "stars": 58000,
+            "growth": -28,
+            "description": "jQuery JavaScript Library",
+            "language": "JavaScript",
+            "score": 30
+        },
+        {
+            "name": "lodash",
+            "fullName": "lodash/lodash",
+            "stars": 57000,
+            "growth": -15,
+            "description": "A modern JavaScript utility library",
+            "language": "JavaScript",
+            "score": 45
+        }
+    ]
+}
