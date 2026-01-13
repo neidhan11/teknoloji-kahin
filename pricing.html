@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiyatlandırma | Teknoloji Kahin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pricing-hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .pricing-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .pricing-hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0;
+            align-items: center;
+        }
+
+        .toggle-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-label.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            width: 56px;
+            height: 28px;
+            background: var(--bg-tertiary);
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 31px;
+        }
+
+        .save-badge {
+            background: var(--accent-green);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto 60px;
+        }
+
+        .pricing-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-card.featured {
+            background: var(--gradient-primary);
+            border: none;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-yellow);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .plan-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .pricing-card.featured .plan-name {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .plan-price {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .price-currency {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .pricing-card.featured .price-period {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .plan-desc {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .pricing-card.featured .plan-desc {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .feature-icon.check {
+            color: var(--accent-green);
+        }
+
+        .feature-icon.x {
+            color: var(--text-muted);
+        }
+
+        .plan-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .plan-btn.primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .plan-btn.primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .plan-btn.secondary {
+            background: white;
+            color: var(--accent-primary);
+        }
+
+        .plan-btn.secondary:hover {
+            background: #f0f0f0;
+        }
+
+        .plan-btn.outline {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .plan-btn.outline:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto 60px;
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            padding: 0 24px 20px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Guarantee Section */
+        .guarantee-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            margin-bottom: 60px;
+        }
+
+        .guarantee-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .guarantee-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .guarantee-section p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+                order: -1;
+            }
+
+            .pricing-hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Ana Sayfa</a>
+                <a href="compare.html" class="nav-link">Karşılaştır</a>
+                <a href="sponsors.html" class="nav-link">Sponsors</a>
+                <a href="pricing.html" class="nav-link nav-cta">Fiyatlandırma</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="pricing-hero">
+            <h1>Geleceği <span class="gradient-text">Erken Gör</span></h1>
+            <p>Trending teknolojileri herkes görmeden tespit et. Kariyer avantajını yakala.</p>
+        </section>
+
+        <!-- Toggle -->
+        <div class="pricing-toggle">
+            <span class="toggle-label active" id="monthlyLabel">Aylık</span>
+            <div class="toggle-switch" id="billingToggle"></div>
+            <span class="toggle-label" id="yearlyLabel">Yıllık</span>
+            <span class="save-badge">2 Ay Bedava</span>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="pricing-cards">
+            <!-- Free -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">
+                    <span class="price-currency">$</span>
+                    <span class="price-amount">0</span>
+                </div>
+                <p class="plan-desc">Başlamak için ideal</p>
+                <ul class="plan-features">
+                    <li><span class="feature-icon check">✓</span> Haftalık trend raporu</li>
+                    <li><span class="feature-icon check">✓</span> Top 10 proje</li>
+                    <li><span class="feature-icon check">✓</span> 7 günlük veri</li>
+                    <li><span class="feature-icon x">✗</span> Email alerts</li>
+                    <li><span class="feature-icon x">✗</span> Erken tespit</li>
+                    <li><span class="feature-icon x">✗</span> API erişimi</li>
+                </ul>
+                <a href="index.html" class="plan-btn outline">Ücretsiz Başla</a>
+            </div>
+
+            <!-- Pro - Featured -->
+            <div class="pricing-card featured">
+                <span class="popular-badge">🔥 En Popüler</span>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="price-currency">$</span>
+                    <span class="price-amount" id="proPrice">29</span>
+                    <span class="price-period">/ay</span>
+                </div>
+                <p class="plan-desc">Profesyoneller için</p>
+                <ul class="plan-features">
+                    <li><span class="feature-icon check">✓</span> <strong>Günlük</strong> trend raporu</li>
+                    <li><span class="feature-icon check">✓</span> <strong>Top 50</strong> proje</li>
+                    <li><span class="feature-icon check">✓</span> <strong>90 gün</strong> veri</li>
+                    <li><span class="feature-icon check">✓</span> <strong>Email alerts</strong></li>
+                    <li><span class="feature-icon check">✓</span> <strong>Erken tespit</strong> (3 ay önce)</li>
+                    <li><span class="feature-icon x">✗</span> API erişimi</li>
+                </ul>
+                <button class="plan-btn secondary" onclick="subscribe('pro')">Pro'ya Geç</button>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="pricing-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">
+                    <span class="price-currency">$</span>
+                    <span class="price-amount" id="enterprisePrice">199</span>
+                    <span class="price-period">/ay</span>
+                </div>
+                <p class="plan-desc">Takımlar ve şirketler için</p>
+                <ul class="plan-features">
+                    <li><span class="feature-icon check">✓</span> Pro'nun tüm özellikleri</li>
+                    <li><span class="feature-icon check">✓</span> <strong>Sınırsız</strong> proje takibi</li>
+                    <li><span class="feature-icon check">✓</span> <strong>1 yıl</strong> veri</li>
+                    <li><span class="feature-icon check">✓</span> <strong>API erişimi</strong></li>
+                    <li><span class="feature-icon check">✓</span> <strong>Due Diligence</strong> raporları</li>
+                    <li><span class="feature-icon check">✓</span> <strong>Özel destek</strong></li>
+                </ul>
+                <button class="plan-btn primary" onclick="subscribe('enterprise')">İletişime Geç</button>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <section class="faq-section">
+            <h2>Sıkça Sorulan Sorular</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>"Erken tespit" ne demek?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Algoritmamız, bir teknolojinin popüler olmadan 3-6 ay önce yükselişe geçeceğini tespit eder.
+                        Böylece herkes öğrenmeden önce o teknolojiyi öğrenebilir, iş fırsatlarını yakalayabilirsiniz.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>İstediğim zaman iptal edebilir miyim?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Evet! Herhangi bir zamanda, herhangi bir sebep belirtmeden iptal edebilirsiniz. Kalan süre için
+                        iade yapılır.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Hangi ödeme yöntemlerini kabul ediyorsunuz?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Visa, Mastercard, American Express ve PayPal ile ödeme yapabilirsiniz. Tüm ödemeler Stripe
+                        üzerinden güvenli şekilde işlenir.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Veriler ne sıklıkla güncelleniyor?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Free tier haftalık, Pro tier günlük, Enterprise tier saatlik güncellenir. GitHub API'den gerçek
+                        zamanlı veri çekilir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guarantee -->
+        <section class="guarantee-section">
+            <div class="guarantee-icon">🛡️</div>
+            <h3>30 Gün Para İade Garantisi</h3>
+            <p>Memnun kalmazsan, ilk 30 gün içinde soru sorulmadan paranı iade ediyoruz.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="compare.html">Karşılaştır</a>
+                <a href="history.html">Tarihsel</a>
+                <a href="regional.html">Bölgesel</a>
+            </nav>
+            <div class="footer-info">
+                <p>© 2026 Teknoloji Kahin. Tüm hakları saklıdır.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Billing toggle
+        const toggle = document.getElementById('billingToggle');
+        const monthlyLabel = document.getElementById('monthlyLabel');
+        const yearlyLabel = document.getElementById('yearlyLabel');
+        const proPrice = document.getElementById('proPrice');
+        const enterprisePrice = document.getElementById('enterprisePrice');
+
+        let isYearly = false;
+
+        toggle.addEventListener('click', () => {
+            isYearly = !isYearly;
+            toggle.classList.toggle('active', isYearly);
+            monthlyLabel.classList.toggle('active', !isYearly);
+            yearlyLabel.classList.toggle('active', isYearly);
+
+            // Update prices (yearly = 10 months price)
+            proPrice.textContent = isYearly ? '24' : '29';
+            enterprisePrice.textContent = isYearly ? '166' : '199';
+        });
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                q.parentElement.classList.toggle('open');
+            });
+        });
+
+        // Subscribe function (demo)
+        function subscribe(plan) {
+            // Demo mode - show alert
+            const prices = {
+                pro: isYearly ? '$24/ay (yıllık)' : '$29/ay',
+                enterprise: isYearly ? '$166/ay (yıllık)' : '$199/ay'
+            };
+
+            alert(`🎉 ${plan.toUpperCase()} planı seçtiniz!\n\nFiyat: ${prices[plan]}\n\n(Demo mod - Gerçek ödeme entegrasyonu yakında)`);
+
+            // Save to localStorage for demo
+            localStorage.setItem('userPlan', plan);
+            localStorage.setItem('isYearly', isYearly);
+
+            // Redirect to premium page
+            window.location.href = 'premium.html';
+        }
+    </script>
+</body>
+
+</html>

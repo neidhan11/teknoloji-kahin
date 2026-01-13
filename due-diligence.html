@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Due Diligence | Teknoloji Kahin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dd-hero {
+            text-align: center;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .dd-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .dd-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 24px;
+        }
+
+        .use-cases {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .use-case {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+
+        .input-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .input-section h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .repo-input-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .repo-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 0 20px;
+            transition: border-color 0.3s;
+        }
+
+        .repo-input:focus-within {
+            border-color: var(--accent-primary);
+        }
+
+        .repo-prefix {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .repo-input input {
+            flex: 1;
+            padding: 16px 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .repo-input input:focus {
+            outline: none;
+        }
+
+        .analyze-btn {
+            padding: 16px 32px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .analyze-btn:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Results */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .report-header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .report-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .report-info h2 a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .report-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .grade-card {
+            text-align: center;
+            padding: 30px 40px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+        }
+
+        .grade-value {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .grade-value.A {
+            color: var(--accent-green);
+        }
+
+        .grade-value.B {
+            color: #84cc16;
+        }
+
+        .grade-value.C {
+            color: var(--accent-yellow);
+        }
+
+        .grade-value.D {
+            color: #f97316;
+        }
+
+        .grade-value.F {
+            color: var(--accent-red);
+        }
+
+        .grade-label {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .metric-value.good {
+            color: var(--accent-green);
+        }
+
+        .metric-value.warning {
+            color: var(--accent-yellow);
+        }
+
+        .metric-value.bad {
+            color: var(--accent-red);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Analysis Sections */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .analysis-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+        }
+
+        .analysis-card h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-small {
+            height: 200px;
+        }
+
+        /* Contributor Analysis */
+        .contributor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contributor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+        }
+
+        .contributor-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .contributor-info {
+            flex: 1;
+        }
+
+        .contributor-name {
+            font-weight: 600;
+        }
+
+        .contributor-commits {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .contributor-percent {
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        /* Verdict Section */
+        .verdict-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .verdict-section h3 {
+            margin-bottom: 24px;
+            font-size: 1.3rem;
+        }
+
+        .verdict-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .verdict-item {
+            padding: 20px;
+            border-radius: var(--radius-md);
+        }
+
+        .verdict-item.positive {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .verdict-item.neutral {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .verdict-item.negative {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .verdict-icon {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .verdict-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .verdict-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Investment Recommendation */
+        .investment-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .investment-header {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+
+        .investment-verdict {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .investment-verdict.yes {
+            color: var(--accent-green);
+        }
+
+        .investment-verdict.maybe {
+            color: var(--accent-yellow);
+        }
+
+        .investment-verdict.no {
+            color: var(--accent-red);
+        }
+
+        .investment-reason {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Export */
+        .export-section {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .export-btn.primary {
+            background: var(--gradient-primary);
+            border: none;
+        }
+
+        @media (max-width: 900px) {
+            .report-header {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .verdict-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .repo-input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Ana Sayfa</a>
+                <a href="risk-analyzer.html" class="nav-link">Risk Analizi</a>
+                <a href="sponsors.html" class="nav-link">Sponsors</a>
+                <a href="pricing.html" class="nav-link nav-cta">Fiyatlandırma</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="dd-hero">
+            <h1>📊 Tech <span class="gradient-text">Due Diligence</span></h1>
+            <p>GitHub repo'sunu analiz et, teknik sağlık raporunu al. Yatırım kararlarını veriye dayandır.</p>
+            <div class="use-cases">
+                <div class="use-case">💰 Yatırımcılar</div>
+                <div class="use-case">🏢 M&A</div>
+                <div class="use-case">👔 CTO'lar</div>
+                <div class="use-case">🔍 Araştırmacılar</div>
+            </div>
+        </section>
+
+        <!-- Input -->
+        <section class="input-section">
+            <h2>🔗 GitHub Repository Analiz Et</h2>
+            <div class="repo-input-group">
+                <div class="repo-input">
+                    <span class="repo-prefix">github.com/</span>
+                    <input type="text" id="repoInput" placeholder="owner/repo (örn: facebook/react)">
+                </div>
+                <button class="analyze-btn" onclick="analyzeRepo()">📊 Analiz Et</button>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="results-section" id="resultsSection">
+            <!-- Report Header -->
+            <div class="report-header">
+                <div class="report-info">
+                    <h2><a id="repoName" href="#" target="_blank">-</a></h2>
+                    <p id="repoDesc">-</p>
+                    <div class="report-meta">
+                        <span class="meta-item">⭐ <span id="metaStars">-</span></span>
+                        <span class="meta-item">🍴 <span id="metaForks">-</span></span>
+                        <span class="meta-item">👥 <span id="metaContributors">-</span></span>
+                        <span class="meta-item">💻 <span id="metaLang">-</span></span>
+                    </div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade-value" id="gradeValue">-</div>
+                    <div class="grade-label">Genel Skor</div>
+                </div>
+            </div>
+
+            <!-- Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">⚡</div>
+                    <div class="metric-value" id="activityScore">-</div>
+                    <div class="metric-label">Aktivite Skoru</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-value" id="teamScore">-</div>
+                    <div class="metric-label">Takım Sağlığı</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">🔧</div>
+                    <div class="metric-value" id="maintScore">-</div>
+                    <div class="metric-label">Bakım Durumu</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-value" id="growthScore">-</div>
+                    <div class="metric-label">Büyüme Trendi</div>
+                </div>
+            </div>
+
+            <!-- Analysis Charts -->
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>📈 Commit Aktivitesi (12 Ay)</h3>
+                    <div class="chart-small">
+                        <canvas id="commitChart"></canvas>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <h3>👥 Top Contributor'lar</h3>
+                    <div class="contributor-list" id="contributorList">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verdict -->
+            <div class="verdict-section">
+                <h3>🔍 Detaylı Analiz</h3>
+                <div class="verdict-grid" id="verdictGrid">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Investment Recommendation -->
+            <div class="investment-section">
+                <div class="investment-header">💼 Yatırım Tavsiyesi</div>
+                <div class="investment-verdict" id="investmentVerdict">-</div>
+                <div class="investment-reason" id="investmentReason">-</div>
+            </div>
+
+            <!-- Export -->
+            <div class="export-section">
+                <button class="export-btn" onclick="exportPDF()">
+                    <span>📄</span>
+                    <span>PDF Rapor</span>
+                </button>
+                <button class="export-btn" onclick="shareReport()">
+                    <span>🔗</span>
+                    <span>Paylaş</span>
+                </button>
+                <button class="export-btn primary" onclick="orderFull()">
+                    <span>📊</span>
+                    <span>Detaylı Rapor ($199)</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="risk-analyzer.html">Risk Analizi</a>
+                <a href="pricing.html">Fiyatlandırma</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        let commitChart = null;
+
+        // Demo data for popular repos
+        const repoDatabase = {
+            'facebook/react': {
+                name: 'React',
+                desc: 'The library for web and native user interfaces.',
+                stars: 228000,
+                forks: 46500,
+                contributors: 1750,
+                lang: 'JavaScript',
+                grade: 'A',
+                activity: 95,
+                team: 92,
+                maint: 98,
+                growth: 88,
+                commits: [120, 145, 132, 156, 178, 165, 142, 189, 201, 187, 195, 210],
+                topContributors: [
+                    { name: 'gaearon', commits: 1850, percent: 12 },
+                    { name: 'acdlite', commits: 1420, percent: 9 },
+                    { name: 'sebmarkbage', commits: 1180, percent: 8 },
+                    { name: 'sophiebits', commits: 980, percent: 6 }
+                ],
+                verdicts: [
+                    { type: 'positive', icon: '✅', title: 'Güçlü Ekip', desc: 'Meta\'nın tam zamanlı desteği var' },
+                    { type: 'positive', icon: '📈', title: 'Aktif Geliştirme', desc: 'Son 30 günde 180+ commit' },
+                    { type: 'positive', icon: '🛡️', title: 'Güvenlik', desc: 'Düzenli güvenlik güncellemeleri' }
+                ],
+                investment: { verdict: 'YATIRIM YAPILIR', reason: 'Endüstri standardı, güçlü kurumsal destek, aktif geliştirme.', class: 'yes' }
+            },
+            'oven-sh/bun': {
+                name: 'Bun',
+                desc: 'Incredibly fast JavaScript runtime, bundler, test runner, and package manager.',
+                stars: 85000,
+                forks: 3200,
+                contributors: 420,
+                lang: 'Zig',
+                grade: 'A',
+                activity: 98,
+                team: 78,
+                maint: 92,
+                growth: 99,
+                commits: [80, 95, 110, 125, 140, 165, 190, 220, 245, 280, 310, 350],
+                topContributors: [
+                    { name: 'Jarred-Sumner', commits: 4200, percent: 68 },
+                    { name: 'Electroid', commits: 580, percent: 9 },
+                    { name: 'cirospaciari', commits: 320, percent: 5 },
+                    { name: 'paperdave', commits: 280, percent: 4 }
+                ],
+                verdicts: [
+                    { type: 'positive', icon: '🚀', title: 'Hızlı Büyüme', desc: 'Son 6 ayda %400+ star artışı' },
+                    { type: 'neutral', icon: '⚠️', title: 'Bus Factor', desc: 'Ana geliştirici dominasyonu yüksek' },
+                    { type: 'positive', icon: '💰', title: 'Funding', desc: 'Oven şirketi $7M+ yatırım aldı' }
+                ],
+                investment: { verdict: 'YÜKSEK POTANSİYEL', reason: 'Hızlı büyüme ama tek geliştirici riski. Dikkatli yatırım önerilir.', class: 'maybe' }
+            }
+        };
+
+        function analyzeRepo() {
+            const input = document.getElementById('repoInput').value.trim();
+            if (!input) {
+                alert('Lütfen bir repo girin!');
+                return;
+            }
+
+            // Check database or generate random
+            const data = repoDatabase[input] || generateRandomData(input);
+            displayResults(input, data);
+        }
+
+        function generateRandomData(repo) {
+            const [owner, name] = repo.split('/');
+            const grade = ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)];
+            const activity = 40 + Math.floor(Math.random() * 55);
+
+            return {
+                name: name || 'Repo',
+                desc: 'GitHub repository',
+                stars: Math.floor(Math.random() * 50000),
+                forks: Math.floor(Math.random() * 5000),
+                contributors: Math.floor(Math.random() * 200) + 10,
+                lang: ['JavaScript', 'TypeScript', 'Python', 'Go', 'Rust'][Math.floor(Math.random() * 5)],
+                grade,
+                activity,
+                team: 30 + Math.floor(Math.random() * 60),
+                maint: 40 + Math.floor(Math.random() * 50),
+                growth: 20 + Math.floor(Math.random() * 70),
+                commits: Array.from({ length: 12 }, () => Math.floor(Math.random() * 100) + 10),
+                topContributors: [
+                    { name: owner || 'user1', commits: 500 + Math.floor(Math.random() * 1000), percent: 30 + Math.floor(Math.random() * 40) },
+                    { name: 'contributor-2', commits: 200 + Math.floor(Math.random() * 300), percent: 10 + Math.floor(Math.random() * 15) },
+                    { name: 'contributor-3', commits: 100 + Math.floor(Math.random() * 200), percent: 5 + Math.floor(Math.random() * 10) }
+                ],
+                verdicts: [
+                    { type: activity > 70 ? 'positive' : 'neutral', icon: activity > 70 ? '✅' : '⚠️', title: 'Aktivite', desc: activity > 70 ? 'Düzenli commit yapılıyor' : 'Commit sıklığı düşük' },
+                    { type: 'neutral', icon: '👥', title: 'Takım', desc: 'Contributor dağılımı incelenmeli' },
+                    { type: grade === 'A' || grade === 'B' ? 'positive' : 'negative', icon: grade === 'A' || grade === 'B' ? '📈' : '📉', title: 'Trend', desc: grade === 'A' || grade === 'B' ? 'Pozitif büyüme trendi' : 'Büyüme yavaşlıyor' }
+                ],
+                investment: grade === 'A' ?
+                    { verdict: 'DEĞERLENDİR', reason: 'Pozitif sinyaller var, detaylı analiz önerilir.', class: 'maybe' } :
+                    grade === 'B' ?
+                        { verdict: 'DİKKATLİ OL', reason: 'Bazı riskler mevcut, daha fazla araştırma gerekli.', class: 'maybe' } :
+                        { verdict: 'RİSKLİ', reason: 'Önemli risk faktörleri tespit edildi.', class: 'no' }
+            };
+        }
+
+        function displayResults(repo, data) {
+            document.getElementById('resultsSection').classList.add('show');
+
+            // Header
+            document.getElementById('repoName').textContent = data.name;
+            document.getElementById('repoName').href = `https://github.com/${repo}`;
+            document.getElementById('repoDesc').textContent = data.desc;
+            document.getElementById('metaStars').textContent = formatNumber(data.stars);
+            document.getElementById('metaForks').textContent = formatNumber(data.forks);
+            document.getElementById('metaContributors').textContent = data.contributors;
+            document.getElementById('metaLang').textContent = data.lang;
+
+            // Grade
+            const gradeEl = document.getElementById('gradeValue');
+            gradeEl.textContent = data.grade;
+            gradeEl.className = 'grade-value ' + data.grade;
+
+            // Metrics
+            setMetric('activityScore', data.activity);
+            setMetric('teamScore', data.team);
+            setMetric('maintScore', data.maint);
+            setMetric('growthScore', data.growth);
+
+            // Contributors
+            document.getElementById('contributorList').innerHTML = data.topContributors.map(c => `
+                <div class="contributor-item">
+                    <div class="contributor-avatar">${c.name[0].toUpperCase()}</div>
+                    <div class="contributor-info">
+                        <div class="contributor-name">${c.name}</div>
+                        <div class="contributor-commits">${c.commits} commits</div>
+                    </div>
+                    <div class="contributor-percent">${c.percent}%</div>
+                </div>
+            `).join('');
+
+            // Verdicts
+            document.getElementById('verdictGrid').innerHTML = data.verdicts.map(v => `
+                <div class="verdict-item ${v.type}">
+                    <div class="verdict-icon">${v.icon}</div>
+                    <div class="verdict-title">${v.title}</div>
+                    <div class="verdict-desc">${v.desc}</div>
+                </div>
+            `).join('');
+
+            // Investment
+            document.getElementById('investmentVerdict').textContent = data.investment.verdict;
+            document.getElementById('investmentVerdict').className = 'investment-verdict ' + data.investment.class;
+            document.getElementById('investmentReason').textContent = data.investment.reason;
+
+            // Chart
+            renderCommitChart(data.commits);
+
+            // Scroll
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setMetric(id, value) {
+            const el = document.getElementById(id);
+            el.textContent = value + '/100';
+            el.className = 'metric-value ' + (value >= 70 ? 'good' : value >= 40 ? 'warning' : 'bad');
+        }
+
+        function renderCommitChart(data) {
+            const ctx = document.getElementById('commitChart').getContext('2d');
+
+            if (commitChart) commitChart.destroy();
+
+            const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+            commitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Commits',
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#606070' }, grid: { display: false } },
+                        y: { ticks: { color: '#606070' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        function exportPDF() {
+            alert('📄 PDF raporu hazırlanıyor...\n\n(Demo modunda bu özellik simüle edilmektedir)');
+        }
+
+        function shareReport() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url);
+            alert('🔗 Link kopyalandı!');
+        }
+
+        function orderFull() {
+            alert('📊 Detaylı Rapor Siparişi\n\nFiyat: $199\n\nİçerik:\n- 20+ sayfa analiz\n- Güvenlik taraması\n- Dependency audit\n- Takım analizi\n- Rekabet karşılaştırması\n\n(Demo modunda bu özellik simüle edilmektedir)');
+        }
+
+        // Pre-fill demo
+        document.getElementById('repoInput').value = 'facebook/react';
+    </script>
+</body>
+
+</html>

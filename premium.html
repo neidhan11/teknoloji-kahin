@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Dashboard | Teknoloji Kahin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .premium-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .premium-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .premium-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Early Detection Alert */
+        .early-alert {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .early-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .early-alert-header h3 {
+            color: var(--accent-green);
+            font-size: 1rem;
+        }
+
+        .early-badge {
+            background: var(--accent-green);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .early-projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .early-project {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .early-project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .early-project-name {
+            font-weight: 600;
+        }
+
+        .early-project-score {
+            padding: 4px 10px;
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-yellow);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .early-project-reason {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .early-project-prediction {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .early-project-prediction strong {
+            color: var(--accent-green);
+        }
+
+        /* Trend List Premium */
+        .premium-trend-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .premium-trend-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(8px);
+        }
+
+        .trend-rank-badge {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-secondary);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .trend-rank-badge.top3 {
+            background: var(--gradient-primary);
+        }
+
+        .premium-trend-info {
+            flex: 1;
+        }
+
+        .premium-trend-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .premium-trend-name a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .premium-trend-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .premium-trend-growth {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .growth-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .growth-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Alerts Panel */
+        .alerts-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .alert-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .alert-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mini-stat {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .mini-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mini-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Chart Section */
+        .chart-card {
+            margin-bottom: 30px;
+        }
+
+        /* Upgrade Banner */
+        .upgrade-banner {
+            display: none;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .upgrade-banner.show {
+            display: block;
+        }
+
+        .upgrade-banner h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .upgrade-banner p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .upgrade-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: white;
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+        }
+
+        .upgrade-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .premium-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .early-projects {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Ana Sayfa</a>
+                <a href="risk-analyzer.html" class="nav-link">Risk Analizi</a>
+                <a href="sponsors.html" class="nav-link">Sponsors</a>
+                <a href="pricing.html" class="nav-link">Fiyatlandırma</a>
+            </div>
+        </nav>
+
+        <!-- Premium Header -->
+        <div class="premium-header">
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-details">
+                    <h3>Hoş Geldin!</h3>
+                    <span class="plan-badge" id="planBadge">PRO</span>
+                </div>
+            </div>
+            <a href="notifications.html" class="nav-link">⚙️ Ayarlar</a>
+        </div>
+
+        <!-- Upgrade Banner (for free users) -->
+        <div class="upgrade-banner" id="upgradeBanner">
+            <h3>🚀 Pro'ya Yükselt</h3>
+            <p>Erken tespit özelliğine ve günlük raporlara erişim için Pro'ya geç!</p>
+            <a href="pricing.html" class="upgrade-btn">Upgrade</a>
+        </div>
+
+        <!-- Early Detection Alert -->
+        <div class="early-alert">
+            <div class="early-alert-header">
+                <span>🎯</span>
+                <h3>Erken Tespit Uyarısı</h3>
+                <span class="early-badge">3 ay önce</span>
+            </div>
+            <div class="early-projects">
+                <div class="early-project">
+                    <div class="early-project-header">
+                        <span class="early-project-name">🚀 Biome</span>
+                        <span class="early-project-score">Skor: 94</span>
+                    </div>
+                    <div class="early-project-reason">ESLint + Prettier alternatifi. Rust ile yazıldı, 10x hızlı.</div>
+                    <div class="early-project-prediction">
+                        <span>📈 Tahmin:</span>
+                        <strong>3 ay içinde %500 büyüme</strong>
+                    </div>
+                </div>
+                <div class="early-project">
+                    <div class="early-project-header">
+                        <span class="early-project-name">⚡ Effect-TS</span>
+                        <span class="early-project-score">Skor: 91</span>
+                    </div>
+                    <div class="early-project-reason">TypeScript için fonksiyonel programlama. Hata yönetimi devrim.
+                    </div>
+                    <div class="early-project-prediction">
+                        <span>📈 Tahmin:</span>
+                        <strong>3 ay içinde %350 büyüme</strong>
+                    </div>
+                </div>
+                <div class="early-project">
+                    <div class="early-project-header">
+                        <span class="early-project-name">🔥 Val Town</span>
+                        <span class="early-project-score">Skor: 88</span>
+                    </div>
+                    <div class="early-project-reason">Serverless functions kolaylaştırıldı. Heroku sonrası nesil.</div>
+                    <div class="early-project-prediction">
+                        <span>📈 Tahmin:</span>
+                        <strong>3 ay içinde %280 büyüme</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="mini-stat">
+                <div class="mini-stat-value">50</div>
+                <div class="mini-stat-label">Takip Edilen</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">12</div>
+                <div class="mini-stat-label">Erken Tespit</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">5</div>
+                <div class="mini-stat-label">Alert Tetiklendi</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value">90</div>
+                <div class="mini-stat-label">Gün Veri</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="premium-grid">
+            <!-- Trend List -->
+            <div class="premium-card">
+                <div class="card-header">
+                    <h3>🔥 Bu Haftanın Top 10'u</h3>
+                    <a href="index.html" class="view-all">Tümünü Gör →</a>
+                </div>
+                <div id="premiumTrendList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Alerts Panel -->
+            <div class="premium-card">
+                <div class="card-header">
+                    <h3>🔔 Son Uyarılar</h3>
+                    <a href="notifications.html" class="view-all">Ayarlar →</a>
+                </div>
+                <div class="alerts-panel" id="alertsPanel">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="premium-card chart-card">
+            <div class="card-header">
+                <h3>📈 90 Günlük Trend Analizi</h3>
+            </div>
+            <canvas id="premiumChart"></canvas>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="pricing.html">Fiyatlandırma</a>
+                <a href="notifications.html">Bildirimler</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // Check user plan
+        const userPlan = localStorage.getItem('userPlan') || 'free';
+        const planBadge = document.getElementById('planBadge');
+        const upgradeBanner = document.getElementById('upgradeBanner');
+
+        if (userPlan === 'free') {
+            planBadge.textContent = 'FREE';
+            planBadge.style.background = 'var(--text-muted)';
+            upgradeBanner.classList.add('show');
+        } else if (userPlan === 'enterprise') {
+            planBadge.textContent = 'ENTERPRISE';
+        }
+
+        // Demo trend data
+        const topProjects = [
+            { name: 'Bun', repo: 'oven-sh/bun', stars: '85K', growth: '+847%', lang: 'Zig' },
+            { name: 'Turso', repo: 'tursodatabase/libsql', stars: '12K', growth: '+523%', lang: 'Rust' },
+            { name: 'Drizzle ORM', repo: 'drizzle-team/drizzle-orm', stars: '28K', growth: '+412%', lang: 'TypeScript' },
+            { name: 'Hono', repo: 'honojs/hono', stars: '22K', growth: '+385%', lang: 'TypeScript' },
+            { name: 'htmx', repo: 'bigskysoftware/htmx', stars: '42K', growth: '+312%', lang: 'JavaScript' },
+            { name: 'Astro', repo: 'withastro/astro', stars: '48K', growth: '+287%', lang: 'TypeScript' },
+            { name: 'Tauri', repo: 'tauri-apps/tauri', stars: '89K', growth: '+245%', lang: 'Rust' },
+            { name: 'Svelte', repo: 'sveltejs/svelte', stars: '82K', growth: '+198%', lang: 'JavaScript' },
+            { name: 'SolidJS', repo: 'solidjs/solid', stars: '33K', growth: '+156%', lang: 'TypeScript' },
+            { name: 'Deno', repo: 'denoland/deno', stars: '98K', growth: '+134%', lang: 'Rust' }
+        ];
+
+        // Render trend list
+        const trendList = document.getElementById('premiumTrendList');
+        trendList.innerHTML = topProjects.map((p, i) => `
+            <div class="premium-trend-item">
+                <div class="trend-rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</div>
+                <div class="premium-trend-info">
+                    <div class="premium-trend-name">
+                        <a href="https://github.com/${p.repo}" target="_blank">${p.name}</a>
+                    </div>
+                    <div class="premium-trend-meta">
+                        <span>⭐ ${p.stars}</span>
+                        <span>💻 ${p.lang}</span>
+                    </div>
+                </div>
+                <div class="premium-trend-growth">
+                    <span class="growth-value">${p.growth}</span>
+                    <span class="growth-label">haftalık</span>
+                </div>
+            </div>
+        `).join('');
+
+        // Demo alerts
+        const alerts = [
+            { icon: '🚀', title: 'Biome trending!', desc: 'ESLint alternatifi top 5\'e girdi', time: '2 saat önce' },
+            { icon: '📈', title: 'Bun +15% artış', desc: 'Son 24 saatte 1,200 yeni star', time: '5 saat önce' },
+            { icon: '⚠️', title: 'jQuery düşüşte', desc: 'Bu hafta %3 kullanım kaybı', time: '1 gün önce' },
+            { icon: '🎉', title: 'Astro 5.0 çıktı', desc: 'Major release yayınlandı', time: '2 gün önce' },
+            { icon: '🔥', title: 'Effect-TS yükseliyor', desc: 'Enterprise adoption başladı', time: '3 gün önce' }
+        ];
+
+        const alertsPanel = document.getElementById('alertsPanel');
+        alertsPanel.innerHTML = alerts.map(a => `
+            <div class="alert-item">
+                <div class="alert-icon">${a.icon}</div>
+                <div class="alert-content">
+                    <div class="alert-title">${a.title}</div>
+                    <div class="alert-desc">${a.desc}</div>
+                    <div class="alert-time">${a.time}</div>
+                </div>
+            </div>
+        `).join('');
+
+        // Premium Chart (90 days)
+        const ctx = document.getElementById('premiumChart').getContext('2d');
+
+        // Generate 90 days labels
+        const labels = [];
+        for (let i = 90; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            if (i % 7 === 0) {
+                labels.push(d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }));
+            } else {
+                labels.push('');
+            }
+        }
+
+        // Generate trend data
+        function generateTrendData(base, variance) {
+            const data = [];
+            let current = base;
+            for (let i = 0; i <= 90; i++) {
+                current += (Math.random() - 0.3) * variance;
+                current = Math.max(10, Math.min(100, current));
+                data.push(Math.round(current));
+            }
+            return data;
+        }
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Bun',
+                        data: generateTrendData(60, 5),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Turso',
+                        data: generateTrendData(40, 6),
+                        borderColor: '#8b5cf6',
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: 'htmx',
+                        data: generateTrendData(50, 4),
+                        borderColor: '#10b981',
+                        tension: 0.3,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#a0a0b0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#606070' },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        ticks: { color: '#606070' },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

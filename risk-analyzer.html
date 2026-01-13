@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Analyzer | Teknoloji Kahin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .analyzer-hero {
+            text-align: center;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .analyzer-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .analyzer-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .input-section h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .file-drop {
+            flex: 1;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-drop:hover,
+        .file-drop.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-drop-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .file-drop-text {
+            color: var(--text-secondary);
+        }
+
+        .file-drop-text strong {
+            color: var(--accent-primary);
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            color: var(--text-muted);
+        }
+
+        .paste-area {
+            flex: 1;
+        }
+
+        .paste-area textarea {
+            width: 100%;
+            height: 200px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+        }
+
+        .paste-area textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .analyze-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .analyze-btn:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .risk-summary {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .risk-score-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .risk-score-value {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .risk-score-value.low {
+            color: var(--accent-green);
+        }
+
+        .risk-score-value.medium {
+            color: var(--accent-yellow);
+        }
+
+        .risk-score-value.high {
+            color: var(--accent-red);
+        }
+
+        .risk-score-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .risk-score-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .risk-breakdown {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+        }
+
+        .breakdown-header {
+            margin-bottom: 20px;
+        }
+
+        .breakdown-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .breakdown-info {
+            flex: 1;
+        }
+
+        .breakdown-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .breakdown-value {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .breakdown-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .breakdown-status.good {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+        }
+
+        .breakdown-status.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-yellow);
+        }
+
+        .breakdown-status.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+        }
+
+        /* Dependencies Table */
+        .deps-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 40px;
+        }
+
+        .deps-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .deps-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .deps-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .deps-table th,
+        .deps-table td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        .deps-table th {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .deps-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .deps-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .dep-name {
+            font-weight: 600;
+        }
+
+        .dep-name a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .risk-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .risk-badge.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+        }
+
+        .risk-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-yellow);
+        }
+
+        .risk-badge.high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+        }
+
+        /* Recommendations */
+        .recs-section {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 40px;
+        }
+
+        .recs-section h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rec-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+
+        .rec-icon {
+            font-size: 1.5rem;
+        }
+
+        .rec-content {
+            flex: 1;
+        }
+
+        .rec-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .rec-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Export Button */
+        .export-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .file-input-wrapper {
+                flex-direction: column;
+            }
+
+            .or-divider {
+                padding: 20px 0;
+            }
+
+            .risk-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Ana Sayfa</a>
+                <a href="sponsors.html" class="nav-link">Sponsors</a>
+                <a href="due-diligence.html" class="nav-link">Due Diligence</a>
+                <a href="pricing.html" class="nav-link nav-cta">Fiyatlandırma</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="analyzer-hero">
+            <h1>⚠️ Dependency <span class="gradient-text">Risk Analyzer</span></h1>
+            <p>package.json dosyanı analiz et, bağımlılıklarının risk skorunu öğren, güvenlik açıklarını tespit et.</p>
+        </section>
+
+        <!-- Input Section -->
+        <section class="input-section">
+            <h2>📄 package.json Yükle veya Yapıştır</h2>
+            <div class="file-input-wrapper">
+                <div class="file-drop" id="fileDrop">
+                    <div class="file-drop-icon">📁</div>
+                    <div class="file-drop-text">
+                        <strong>package.json</strong> dosyasını buraya sürükle<br>
+                        veya tıkla
+                    </div>
+                    <input type="file" id="fileInput" accept=".json" hidden>
+                </div>
+                <div class="or-divider">veya</div>
+                <div class="paste-area">
+                    <textarea id="jsonInput" placeholder='{ "dependencies": { "react": "^18.2.0" } }'></textarea>
+                </div>
+            </div>
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzePackage()">🔍 Analiz Et</button>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection">
+            <!-- Risk Summary -->
+            <div class="risk-summary">
+                <div class="risk-score-card">
+                    <div class="risk-score-value" id="riskScoreValue">72</div>
+                    <div class="risk-score-label" id="riskScoreLabel">Orta Risk</div>
+                    <div class="risk-score-desc">100 üzerinden güvenlik skoru</div>
+                </div>
+                <div class="risk-breakdown">
+                    <div class="breakdown-header">
+                        <h3>📊 Risk Dağılımı</h3>
+                    </div>
+                    <div id="breakdownList">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dependencies Table -->
+            <div class="deps-section">
+                <div class="deps-header">
+                    <h3>📦 Bağımlılık Detayları</h3>
+                    <div class="deps-filter">
+                        <button class="filter-btn active" onclick="filterDeps('all')">Tümü</button>
+                        <button class="filter-btn" onclick="filterDeps('high')">Yüksek Risk</button>
+                        <button class="filter-btn" onclick="filterDeps('medium')">Orta Risk</button>
+                    </div>
+                </div>
+                <table class="deps-table">
+                    <thead>
+                        <tr>
+                            <th>Paket</th>
+                            <th>Versiyon</th>
+                            <th>Son Güncelleme</th>
+                            <th>Stars</th>
+                            <th>Risk</th>
+                            <th>Öneri</th>
+                        </tr>
+                    </thead>
+                    <tbody id="depsTable">
+                        <!-- Dynamic -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="recs-section">
+                <h3>🔧 Öneriler</h3>
+                <div id="recsList">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Export -->
+            <div class="export-section">
+                <button class="export-btn" onclick="exportPDF()">
+                    <span>📄</span>
+                    <span>PDF Rapor İndir</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="sponsors.html">Sponsors</a>
+                <a href="pricing.html">Fiyatlandırma</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // File drop handling
+        const fileDrop = document.getElementById('fileDrop');
+        const fileInput = document.getElementById('fileInput');
+        const jsonInput = document.getElementById('jsonInput');
+
+        fileDrop.addEventListener('click', () => fileInput.click());
+
+        fileDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDrop.classList.add('dragover');
+        });
+
+        fileDrop.addEventListener('dragleave', () => {
+            fileDrop.classList.remove('dragover');
+        });
+
+        fileDrop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDrop.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) readFile(file);
+        });
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) readFile(file);
+        });
+
+        function readFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                jsonInput.value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        // Dependency database (simulated)
+        const depDatabase = {
+            'react': { stars: 228000, lastUpdate: '2024-12-15', risk: 'low', alt: null },
+            'vue': { stars: 207000, lastUpdate: '2024-12-10', risk: 'low', alt: null },
+            'lodash': { stars: 59000, lastUpdate: '2023-05-08', risk: 'medium', alt: 'es-toolkit' },
+            'moment': { stars: 47800, lastUpdate: '2022-07-06', risk: 'high', alt: 'date-fns veya dayjs' },
+            'express': { stars: 65000, lastUpdate: '2024-10-08', risk: 'low', alt: null },
+            'axios': { stars: 105000, lastUpdate: '2024-11-15', risk: 'low', alt: null },
+            'jquery': { stars: 59000, lastUpdate: '2024-02-22', risk: 'medium', alt: 'Vanilla JS' },
+            'request': { stars: 25600, lastUpdate: '2020-02-11', risk: 'high', alt: 'node-fetch veya axios' },
+            'underscore': { stars: 27200, lastUpdate: '2023-03-17', risk: 'medium', alt: 'lodash veya native' },
+            'typescript': { stars: 101000, lastUpdate: '2024-12-20', risk: 'low', alt: null },
+            'webpack': { stars: 64500, lastUpdate: '2024-11-05', risk: 'low', alt: 'Vite (daha hızlı)' },
+            'eslint': { stars: 25000, lastUpdate: '2024-12-18', risk: 'low', alt: 'Biome (daha hızlı)' },
+            'prettier': { stars: 49500, lastUpdate: '2024-11-10', risk: 'low', alt: 'Biome' },
+            'chalk': { stars: 21800, lastUpdate: '2024-08-05', risk: 'low', alt: null },
+            'commander': { stars: 26800, lastUpdate: '2024-10-22', risk: 'low', alt: null }
+        };
+
+        function analyzePackage() {
+            const input = jsonInput.value.trim();
+            if (!input) {
+                alert('Lütfen package.json içeriği girin!');
+                return;
+            }
+
+            let pkg;
+            try {
+                pkg = JSON.parse(input);
+            } catch (e) {
+                alert('Geçersiz JSON formatı!');
+                return;
+            }
+
+            const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+            if (!deps || Object.keys(deps).length === 0) {
+                alert('Hiç bağımlılık bulunamadı!');
+                return;
+            }
+
+            // Analyze dependencies
+            const results = [];
+            let totalRisk = 0;
+            let highCount = 0, mediumCount = 0, lowCount = 0;
+
+            for (const [name, version] of Object.entries(deps)) {
+                const info = depDatabase[name] || {
+                    stars: Math.floor(Math.random() * 50000),
+                    lastUpdate: '2024-06-15',
+                    risk: 'low',
+                    alt: null
+                };
+
+                // Calculate days since update
+                const daysSince = Math.floor((new Date() - new Date(info.lastUpdate)) / (1000 * 60 * 60 * 24));
+
+                // Adjust risk based on age
+                let risk = info.risk;
+                if (daysSince > 365 && risk === 'medium') risk = 'high';
+                if (daysSince > 180 && risk === 'low') risk = 'medium';
+
+                if (risk === 'high') { highCount++; totalRisk += 30; }
+                else if (risk === 'medium') { mediumCount++; totalRisk += 15; }
+                else { lowCount++; totalRisk += 5; }
+
+                results.push({
+                    name,
+                    version,
+                    lastUpdate: info.lastUpdate,
+                    stars: info.stars,
+                    risk,
+                    alt: info.alt
+                });
+            }
+
+            // Calculate score (100 - normalized risk)
+            const totalDeps = results.length;
+            const maxRisk = totalDeps * 30;
+            const score = Math.round(100 - (totalRisk / maxRisk) * 100);
+
+            // Display results
+            displayResults(score, results, { highCount, mediumCount, lowCount });
+        }
+
+        function displayResults(score, deps, counts) {
+            document.getElementById('resultsSection').classList.add('show');
+
+            // Score
+            const scoreEl = document.getElementById('riskScoreValue');
+            scoreEl.textContent = score;
+            scoreEl.className = 'risk-score-value ' + (score >= 70 ? 'low' : score >= 40 ? 'medium' : 'high');
+
+            document.getElementById('riskScoreLabel').textContent =
+                score >= 70 ? 'Düşük Risk ✅' : score >= 40 ? 'Orta Risk ⚠️' : 'Yüksek Risk ❌';
+
+            // Breakdown
+            document.getElementById('breakdownList').innerHTML = `
+                <div class="breakdown-item">
+                    <div class="breakdown-icon">📦</div>
+                    <div class="breakdown-info">
+                        <div class="breakdown-title">Toplam Bağımlılık</div>
+                        <div class="breakdown-value">${deps.length} paket analiz edildi</div>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon">❌</div>
+                    <div class="breakdown-info">
+                        <div class="breakdown-title">Yüksek Risk</div>
+                        <div class="breakdown-value">${counts.highCount} paket kritik durumda</div>
+                    </div>
+                    <span class="breakdown-status ${counts.highCount > 0 ? 'danger' : 'good'}">${counts.highCount > 0 ? 'Dikkat!' : 'Temiz'}</span>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon">⚠️</div>
+                    <div class="breakdown-info">
+                        <div class="breakdown-title">Orta Risk</div>
+                        <div class="breakdown-value">${counts.mediumCount} paket izlenmeli</div>
+                    </div>
+                    <span class="breakdown-status ${counts.mediumCount > 2 ? 'warning' : 'good'}">${counts.mediumCount > 2 ? 'İzle' : 'OK'}</span>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon">✅</div>
+                    <div class="breakdown-info">
+                        <div class="breakdown-title">Düşük Risk</div>
+                        <div class="breakdown-value">${counts.lowCount} paket güvenli</div>
+                    </div>
+                    <span class="breakdown-status good">Güvenli</span>
+                </div>
+            `;
+
+            // Table
+            window.allDeps = deps;
+            renderDepsTable(deps);
+
+            // Recommendations
+            const recs = [];
+            deps.filter(d => d.risk === 'high').forEach(d => {
+                recs.push({
+                    icon: '🔴',
+                    title: `${d.name} değiştirilmeli`,
+                    desc: d.alt ? `Alternatif: ${d.alt}` : 'Bu paket artık aktif olarak bakım görmüyor.'
+                });
+            });
+            deps.filter(d => d.risk === 'medium' && d.alt).slice(0, 3).forEach(d => {
+                recs.push({
+                    icon: '🟡',
+                    title: `${d.name} güncellenebilir`,
+                    desc: `Modern alternatif: ${d.alt}`
+                });
+            });
+
+            if (recs.length === 0) {
+                recs.push({
+                    icon: '✅',
+                    title: 'Harika!',
+                    desc: 'Bağımlılıklarınız güncel ve güvenli görünüyor.'
+                });
+            }
+
+            document.getElementById('recsList').innerHTML = recs.map(r => `
+                <div class="rec-item">
+                    <div class="rec-icon">${r.icon}</div>
+                    <div class="rec-content">
+                        <div class="rec-title">${r.title}</div>
+                        <div class="rec-desc">${r.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderDepsTable(deps) {
+            document.getElementById('depsTable').innerHTML = deps.map(d => `
+                <tr data-risk="${d.risk}">
+                    <td class="dep-name"><a href="https://www.npmjs.com/package/${d.name}" target="_blank">${d.name}</a></td>
+                    <td>${d.version}</td>
+                    <td>${d.lastUpdate}</td>
+                    <td>${formatNumber(d.stars)}</td>
+                    <td><span class="risk-badge ${d.risk}">${d.risk === 'high' ? 'Yüksek' : d.risk === 'medium' ? 'Orta' : 'Düşük'}</span></td>
+                    <td>${d.alt || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterDeps(level) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const filtered = level === 'all' ? window.allDeps : window.allDeps.filter(d => d.risk === level);
+            renderDepsTable(filtered);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        function exportPDF() {
+            alert('📄 PDF raporu indiriliyor...\n\n(Demo modunda bu özellik simüle edilmektedir)');
+        }
+
+        // Demo: Pre-fill with sample
+        jsonInput.value = `{
+  "dependencies": {
+    "react": "^18.2.0",
+    "axios": "^1.6.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "eslint": "^8.55.0",
+    "webpack": "^5.89.0"
+  }
+}`;
+    </script>
+</body>
+
+</html>

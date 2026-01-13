@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Intelligence | Teknoloji Kahin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sponsors-hero {
+            text-align: center;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .sponsors-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .sponsors-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .sponsors-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .sponsor-stat {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .sponsor-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sponsor-stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+        }
+
+        /* Top Sponsored Projects */
+        .sponsored-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .sponsored-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(8px);
+        }
+
+        .sponsor-rank {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .sponsored-info {
+            flex: 1;
+        }
+
+        .sponsored-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sponsored-name a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .sponsored-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .sponsor-amount {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .amount-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .amount-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Sponsor Companies */
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .company-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .company-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
+
+        .company-logo {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .company-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .company-sponsors {
+            font-size: 0.8rem;
+            color: var(--accent-green);
+        }
+
+        /* Guide Section */
+        .guide-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .guide-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .guide-step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Trends Chart */
+        .chart-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 40px;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 40px;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .rec-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .rec-title {
+            font-weight: 600;
+        }
+
+        .rec-roi {
+            padding: 4px 10px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .rec-reason {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .rec-action {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 900px) {
+            .sponsors-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .guide-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rec-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Ana Sayfa</a>
+                <a href="premium.html" class="nav-link">Premium</a>
+                <a href="risk-analyzer.html" class="nav-link">Risk Analizi</a>
+                <a href="pricing.html" class="nav-link nav-cta">Fiyatlandırma</a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="sponsors-hero">
+            <h1>💰 Sponsor <span class="gradient-text">Intelligence</span></h1>
+            <p>GitHub Sponsors verilerini analiz et. Hangi projeler para kazanıyor? Nasıl sponsor çekilir?</p>
+        </section>
+
+        <!-- Stats -->
+        <div class="sponsors-stats">
+            <div class="sponsor-stat">
+                <div class="sponsor-stat-value">$35M+</div>
+                <div class="sponsor-stat-label">Toplam Sponsor Geliri (2025)</div>
+            </div>
+            <div class="sponsor-stat">
+                <div class="sponsor-stat-value">45K+</div>
+                <div class="sponsor-stat-label">Sponsor Alan Geliştirici</div>
+            </div>
+            <div class="sponsor-stat">
+                <div class="sponsor-stat-value">$780</div>
+                <div class="sponsor-stat-label">Ortalama Aylık Gelir</div>
+            </div>
+            <div class="sponsor-stat">
+                <div class="sponsor-stat-value">+42%</div>
+                <div class="sponsor-stat-label">Yıllık Büyüme</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="section-grid">
+            <!-- Top Sponsored -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>🏆 En Çok Sponsor Alan Projeler</h2>
+                </div>
+                <div id="topSponsored">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Top Companies -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2>🏢 En Çok Sponsor Veren Şirketler</h2>
+                </div>
+                <div class="company-grid" id="topCompanies">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Get Sponsors Guide -->
+        <section class="guide-section">
+            <h2>📖 Sponsor Çekme Rehberi</h2>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Değerli Proje</div>
+                    <div class="step-desc">Gerçek bir problemi çözen, aktif kullanılan bir proje oluştur</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Görünürlük</div>
+                    <div class="step-desc">README'de Sponsors butonunu ekle, sosyal medyada paylaş</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Tier'lar Oluştur</div>
+                    <div class="step-desc">$5, $25, $100 gibi farklı tier'lar ve karşılık gelen avantajlar sun</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">İletişim</div>
+                    <div class="step-desc">Sponsorlarla iletişimde kal, teşekkür et, güncellemeler paylaş</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart -->
+        <section class="chart-section">
+            <div class="section-header">
+                <h2>📈 Sponsor Trend Analizi</h2>
+            </div>
+            <canvas id="sponsorChart"></canvas>
+        </section>
+
+        <!-- Recommendations for Companies -->
+        <section class="recommendations">
+            <div class="section-header">
+                <h2>🎯 Şirketler İçin: Hangi Projelere Sponsor Olmalısınız?</h2>
+            </div>
+            <div class="rec-grid" id="recGrid">
+                <!-- Dynamic -->
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="premium.html">Premium</a>
+                <a href="pricing.html">Fiyatlandırma</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        // Top Sponsored Projects
+        const topProjects = [
+            { name: 'Evan You (Vue.js)', handle: 'yyx990803', sponsors: '2,400+', monthly: '$45,000' },
+            { name: 'Sindre Sorhus', handle: 'sindresorhus', sponsors: '1,800+', monthly: '$28,000' },
+            { name: 'Caleb Porzio (Livewire)', handle: 'calebporzio', sponsors: '950+', monthly: '$22,000' },
+            { name: 'Anthony Fu', handle: 'antfu', sponsors: '1,200+', monthly: '$18,000' },
+            { name: 'Wes Bos', handle: 'wesbos', sponsors: '600+', monthly: '$12,000' }
+        ];
+
+        document.getElementById('topSponsored').innerHTML = topProjects.map((p, i) => `
+            <div class="sponsored-item">
+                <div class="sponsor-rank">${i + 1}</div>
+                <div class="sponsored-info">
+                    <div class="sponsored-name">
+                        <a href="https://github.com/sponsors/${p.handle}" target="_blank">${p.name}</a>
+                    </div>
+                    <div class="sponsored-meta">@${p.handle} • ${p.sponsors} sponsors</div>
+                </div>
+                <div class="sponsor-amount">
+                    <span class="amount-value">${p.monthly}</span>
+                    <span class="amount-label">aylık tahmini</span>
+                </div>
+            </div>
+        `).join('');
+
+        // Top Companies
+        const topCompanies = [
+            { name: 'Microsoft', logo: '🏢', sponsoring: '500+ proje' },
+            { name: 'Google', logo: '🔍', sponsoring: '350+ proje' },
+            { name: 'Vercel', logo: '▲', sponsoring: '200+ proje' },
+            { name: 'Shopify', logo: '🛍️', sponsoring: '150+ proje' },
+            { name: 'Stripe', logo: '💳', sponsoring: '120+ proje' },
+            { name: 'GitHub', logo: '🐙', sponsoring: '100+ proje' }
+        ];
+
+        document.getElementById('topCompanies').innerHTML = topCompanies.map(c => `
+            <div class="company-card">
+                <div class="company-logo">${c.logo}</div>
+                <div class="company-name">${c.name}</div>
+                <div class="company-sponsors">${c.sponsoring}</div>
+            </div>
+        `).join('');
+
+        // Recommendations
+        const recs = [
+            {
+                title: 'Bun',
+                reason: 'Hızla büyüyen JavaScript runtime. Görünürlük çok yüksek.',
+                roi: 'Yüksek ROI',
+                link: 'https://github.com/sponsors/Jarred-Sumner'
+            },
+            {
+                title: 'Drizzle ORM',
+                reason: 'TypeScript ORM lideri olmaya aday. Enterprise adoption başladı.',
+                roi: 'Orta-Yüksek ROI',
+                link: 'https://github.com/sponsors/drizzle-team'
+            },
+            {
+                title: 'htmx',
+                reason: 'Simple web development trendi. Topluluk çok aktif.',
+                roi: 'Orta ROI',
+                link: 'https://github.com/sponsors/bigskysoftware'
+            },
+            {
+                title: 'Hono',
+                reason: 'Edge computing için web framework. Cloudflare desteği.',
+                roi: 'Büyüyen ROI',
+                link: 'https://github.com/sponsors/yusukebe'
+            }
+        ];
+
+        document.getElementById('recGrid').innerHTML = recs.map(r => `
+            <div class="rec-card">
+                <div class="rec-header">
+                    <span class="rec-title">${r.title}</span>
+                    <span class="rec-roi">${r.roi}</span>
+                </div>
+                <div class="rec-reason">${r.reason}</div>
+                <a href="${r.link}" target="_blank" class="rec-action">Sponsor Ol →</a>
+            </div>
+        `).join('');
+
+        // Chart
+        const ctx = document.getElementById('sponsorChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [
+                    {
+                        label: 'Toplam Sponsor Geliri ($M)',
+                        data: [5, 12, 18, 25, 32, 35],
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Sponsor Alan Sayısı (K)',
+                        data: [8, 15, 22, 30, 38, 45],
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#a0a0b0' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#606070' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#606070' },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
