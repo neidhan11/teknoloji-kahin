@@ -4,108 +4,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teknoloji Kahin - Trend Radar</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Teknoloji Kahin - Yarının Teknolojilerini Bugünden Gör</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <span class="logo-icon">🔮</span>
-                <h1>Teknoloji Kahin</h1>
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="nav-icon">🔮</span>
+                <span class="nav-title">Teknoloji Kahin</span>
             </div>
-            <p class="tagline">Yarının Teknolojilerini Bugünden Gör</p>
-            <div class="last-update">
-                Son güncelleme: <span id="lastUpdate">Yükleniyor...</span>
+            <div class="nav-links">
+                <a href="compare.html" class="nav-link">📊 Karşılaştır</a>
+                <a href="history.html" class="nav-link">🗓️ Tarihsel</a>
+                <a href="regional.html" class="nav-link">🌍 Bölgesel</a>
+                <a href="notifications.html" class="nav-link nav-cta">📧 Abone Ol</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="pulse"></span>
+                    <span>Canlı Veri</span>
+                </div>
+                <h1 class="hero-title">
+                    Yarının <span class="gradient-text">Teknolojilerini</span><br>
+                    Bugünden Gör
+                </h1>
+                <p class="hero-subtitle">
+                    GitHub'daki milyonlarca projeyi analiz ediyor, yükselen trendleri tespit ediyoruz.
+                    <strong>Geleceğe yatırım yap.</strong>
+                </p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">28M+</span>
+                        <span class="hero-stat-label">Geliştirici</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">100M+</span>
+                        <span class="hero-stat-label">Repo</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">24/7</span>
+                        <span class="hero-stat-label">İzleme</span>
+                    </div>
+                </div>
+                <div class="hero-update">
+                    Son güncelleme: <span id="lastUpdate">Yükleniyor...</span>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <span class="card-emoji">🚀</span>
+                    <span class="card-name">Bun</span>
+                    <span class="card-growth">+847%</span>
+                </div>
+                <div class="floating-card card-2">
+                    <span class="card-emoji">⚡</span>
+                    <span class="card-name">Turso</span>
+                    <span class="card-growth">+523%</span>
+                </div>
+                <div class="floating-card card-3">
+                    <span class="card-emoji">🔥</span>
+                    <span class="card-name">Drizzle</span>
+                    <span class="card-growth">+412%</span>
+                </div>
             </div>
         </header>
 
-        <!-- Stats -->
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-value" id="totalRepos">-</div>
-                <div class="stat-label">Takip Edilen Proje</div>
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stat-card glass">
+                <div class="stat-icon-wrapper">
+                    <div class="stat-icon">📊</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalRepos">-</div>
+                    <div class="stat-label">Takip Edilen Proje</div>
+                </div>
             </div>
-            <div class="stat-card rising">
-                <div class="stat-icon">🚀</div>
-                <div class="stat-value" id="risingCount">-</div>
-                <div class="stat-label">Yükselen</div>
+            <div class="stat-card glass rising">
+                <div class="stat-icon-wrapper rising">
+                    <div class="stat-icon">🚀</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="risingCount">-</div>
+                    <div class="stat-label">Yükselen Trend</div>
+                </div>
             </div>
-            <div class="stat-card falling">
-                <div class="stat-icon">📉</div>
-                <div class="stat-value" id="fallingCount">-</div>
-                <div class="stat-label">Düşen</div>
+            <div class="stat-card glass falling">
+                <div class="stat-icon-wrapper falling">
+                    <div class="stat-icon">📉</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="fallingCount">-</div>
+                    <div class="stat-label">Düşüş Trendinde</div>
+                </div>
             </div>
         </section>
 
         <!-- Trend Lists -->
-        <section class="trends">
-            <div class="trend-column">
-                <h2>🚀 Yükselen Teknolojiler</h2>
+        <section class="trends-section">
+            <div class="trend-column glass">
+                <div class="section-header">
+                    <h2>🚀 Roket Hızında Yükselenler</h2>
+                    <span class="badge-live">
+                        <span class="pulse-dot"></span>
+                        Canlı
+                    </span>
+                </div>
                 <div class="trend-list" id="risingList">
-                    <div class="loading">Veriler yükleniyor...</div>
+                    <div class="loading-skeleton">
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                    </div>
                 </div>
             </div>
-            <div class="trend-column">
-                <h2>⚠️ Dikkat Edilmesi Gerekenler</h2>
+            <div class="trend-column glass">
+                <div class="section-header">
+                    <h2>⚠️ Dikkat: İzlenmeli</h2>
+                    <a href="notifications.html" class="alert-link">🔔 Uyarı Al</a>
+                </div>
                 <div class="trend-list" id="watchList">
-                    <div class="loading">Veriler yükleniyor...</div>
+                    <div class="loading-skeleton">
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Chart -->
-        <section class="chart-section">
-            <h2>📈 Haftalık Trend Grafiği</h2>
-            <canvas id="trendChart"></canvas>
+        <!-- Chart Section -->
+        <section class="chart-section glass">
+            <div class="section-header">
+                <h2>📈 Haftalık Trend Analizi</h2>
+                <div class="chart-legend">
+                    <span class="legend-item"><span class="legend-dot blue"></span> Skor</span>
+                    <span class="legend-item"><span class="legend-dot green"></span> Büyüme</span>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="trendChart"></canvas>
+            </div>
         </section>
 
-        <!-- All Projects Table -->
-        <section class="projects-section">
-            <h2>📋 Tüm Projeler</h2>
-            <div class="filters">
-                <input type="text" id="searchInput" placeholder="Proje ara...">
-                <select id="sortSelect">
-                    <option value="score">Trend Skoru</option>
-                    <option value="stars">Star Sayısı</option>
-                    <option value="growth">Büyüme Hızı</option>
-                </select>
+        <!-- Projects Table -->
+        <section class="projects-section glass">
+            <div class="section-header">
+                <h2>📋 Tüm Projeler</h2>
+                <div class="table-actions">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Proje ara...">
+                    </div>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="score">Trend Skoru</option>
+                        <option value="stars">Star Sayısı</option>
+                        <option value="growth">Büyüme Hızı</option>
+                    </select>
+                </div>
             </div>
-            <table class="projects-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Proje</th>
-                        <th>⭐ Stars</th>
-                        <th>📈 Büyüme</th>
-                        <th>Trend Skoru</th>
-                    </tr>
-                </thead>
-                <tbody id="projectsTable">
-                    <tr>
-                        <td colspan="5" class="loading">Veriler yükleniyor...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="projects-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Proje</th>
+                            <th>⭐ Stars</th>
+                            <th>📈 Büyüme</th>
+                            <th>Trend Skoru</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTable">
+                        <tr>
+                            <td colspan="5" class="loading">Veriler yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content glass">
+                <h2>🔔 Trendleri Kaçırma!</h2>
+                <p>Haftalık trend raporlarını email'ine gönderelim. Ücretsiz.</p>
+                <a href="notifications.html" class="cta-button">
+                    <span>📧 Abone Ol</span>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Veriler GitHub API'den alınmaktadır • Her gün otomatik güncellenir</p>
-            <nav style="margin: 15px 0;">
-                <a href="compare.html">📊 Karşılaştır</a> |
-                <a href="history.html">🗓️ Tarihsel</a> |
-                <a href="regional.html">🌍 Bölgesel</a> |
-                <a href="notifications.html">📧 Bildirimler</a>
+            <div class="footer-brand">
+                <span>🔮</span>
+                <span>Teknoloji Kahin</span>
+            </div>
+            <nav class="footer-nav">
+                <a href="compare.html">Karşılaştır</a>
+                <a href="history.html">Tarihsel</a>
+                <a href="regional.html">Bölgesel</a>
+                <a href="notifications.html">Bildirimler</a>
             </nav>
-            <p>
-                <a href="https://github.com" target="_blank">GitHub</a> |
-                <a href="#" id="refreshBtn">🔄 Verileri Yenile</a>
-            </p>
+            <div class="footer-info">
+                <p>Veriler GitHub API'den alınmaktadır • Her gün otomatik güncellenir</p>
+                <p class="footer-copy">© 2026 Teknoloji Kahin. Tüm hakları saklıdır.</p>
+            </div>
         </footer>
     </div>
 
